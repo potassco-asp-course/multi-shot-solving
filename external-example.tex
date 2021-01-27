@@ -1,0 +1,22 @@
+% ----------------------------------------------------------------------
+\begin{frame}[fragile]{An example (\texttt{chemistry-external.lp})}
+  \bigskip
+  \lstinputlisting[language=clingo]{chemistry.lp}
+  \pause\smallskip
+  \lstinputlisting[language=clingo,linerange=3-5]{chemistry-external.lp}
+  \pause\medskip
+  \structure{Note} \ Grounding both \texttt{base} and \texttt{acid(42)} yields two externals
+\end{frame}
+% ----------------------------------------------------------------------
+\begin{frame}[fragile]{The example, processing (\texttt{control-external.py})}
+    \bigskip
+    \lstinputlisting[language=python,linerange=4-12,frame=single]{control-external.py}
+    \pause\medskip
+    \lstinputlisting[language=python]{control-external.run}
+\end{frame}
+% ----------------------------------------------------------------------
+%
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../asp"
+%%% End:

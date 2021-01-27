@@ -1,0 +1,37 @@
+% ----------------------------------------------------------------------
+\begin{frame}[fragile]{An example (\texttt{chemistry.lp})}
+  \bigskip
+  \lstinputlisting[language=clingo]{chemistry.lp}
+  \end{frame}
+% ----------------------------------------------------------------------
+\begin{frame}[fragile]{The example, processing (\texttt{control-base.py})}
+    \bigskip
+    \begin{minipage}[t]{0.55\linewidth}
+      \lstinputlisting[language=python,frame=single]{control-base.py}
+    \end{minipage}
+    \pause[3]\hfill
+    \begin{minipage}[t]{0.35\linewidth}
+      \lstinputlisting[language=clingo,frame=single]{chemistry.lp}
+    \end{minipage}
+    \pause[2]\medskip
+    \lstinputlisting[language=python]{control-base.run}
+\end{frame}
+% ----------------------------------------------------------------------
+\begin{frame}[fragile]{The example, processing (\texttt{control-acid.py})}
+    \bigskip
+    \begin{minipage}[t]{0.55\linewidth}
+      \lstinputlisting[language=python,frame=single]{control-acid.py}
+    \end{minipage}
+    \pause[3]\hfill
+    \begin{minipage}[t]{0.35\linewidth}
+      \lstinputlisting[language=clingo,frame=single]{chemistry.lp}
+    \end{minipage}
+    \pause[2]\medskip
+    \lstinputlisting[language=python]{control-acid.run}
+\end{frame}
+% ----------------------------------------------------------------------
+%
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../asp"
+%%% End:

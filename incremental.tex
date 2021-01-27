@@ -1,0 +1,35 @@
+\begin{frame}[fragile,c]{An example of incremental solving}
+\begin{lstlisting}
+#(\pause#)#program base.
+
+p(0).#(\pause#)
+
+#program step (t).
+
+p(t) :- p(t-1).#(\pause#)
+
+#program check (t).
+#external query(t).       % added in python below
+
+:- not p(42), query(t).
+\end{lstlisting}
+\end{frame}
+% ----------------------------------------------------------------------
+\begin{frame}[fragile,shrink]{Incremental solving}
+  \lstinputlisting[language=python]{inc.py}
+\end{frame}
+% ----------------------------------------------------------------------
+\begin{frame}[fragile,shrink]{Incremental solving, zoom on \texttt{register\_options}}
+  \bigskip
+  \lstinputlisting[language=python,linerange=72-93]{inc.py}
+\end{frame}
+% ----------------------------------------------------------------------
+\begin{frame}[fragile,shrink]{Incremental solving, zoom on \texttt{main}}
+  \bigskip
+  \lstinputlisting[language=python,linerange=95-124]{inc.py}
+\end{frame}
+%
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../asp"
+%%% End:

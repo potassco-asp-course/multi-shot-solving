@@ -1,0 +1,34 @@
+% ----------------------------------------------------------------------
+\begin{frame}{External atoms}
+  \begin{itemize}
+  \item \structure{External directive}
+    \medskip
+    \begin{itemize}
+    \item [] \texttt{\#external <atom> [ : <body> ]}
+    \end{itemize}
+    \medskip
+    where
+    \begin{itemize}
+    \item \texttt{<atom> [ : <body> ]} \ is a (conditional) literal
+    \end{itemize}
+    \bigskip
+  \item<2-> \structure{Example} \ \texttt{\#external mark(X,Y,p,t)\;:\;field(X,Y).}
+    \medskip
+  \item <3-> \structure{Note} \ External atoms are
+    \begin{itemize}
+    \item protected from program simplifications
+    \item assigned truth values via API (default: false)
+    \end{itemize}
+    and can be
+    \begin{itemize}
+    \item overwritten by adding rules defining the atom
+    \item permanently set to false
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+% ----------------------------------------------------------------------
+%
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../asp"
+%%% End:

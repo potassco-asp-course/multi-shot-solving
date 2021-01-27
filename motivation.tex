@@ -1,0 +1,29 @@
+\begin{frame}{Motivation}
+  \begin{itemize}
+  \item<1-> \structure{Multi-shot solving} allows for solving continuously changing logic programs in an operative way
+    \medskip
+    \begin{itemize}\normalsize
+    \item<2-> \alert<2-3>{Single-shot solving}\pause[3]: \
+      \textit{ground}\ $|$ \textit{solve}\
+      \medskip
+    \item<4-> \alert<4->{Multi-shot solving}: \
+      \only<6->{$($\,}\only<7->{\textit{input} $|$ }\textit{ground}\only<5->{$^*$}\;$|$\;\textit{solve}\only<5->{$^*$}\only<8->{$|$ \textit{theory} }\only<9->{$|$ \dots}\only<6->{$)^*$}
+    \end{itemize}
+    \medskip
+  \item<10-> \structure{Application areas}
+  \item<10-> [] Agents, Assisted Living, Robotics, Planning, Query-answering, etc
+    \bigskip
+  \item <11-> \structure{Idea} \ \clingo\ \ = \ ASP + Control
+    \smallskip
+    \begin{itemize}\normalsize
+    \item Extend ASP with dedicated directives
+      \smallskip
+    \item Provide powerful API (here: \python)
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+%
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../asp"
+%%% End:

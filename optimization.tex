@@ -1,0 +1,38 @@
+% ----------------------------------------------------------------------
+\begin{frame}[fragile]{Optimization}
+  \bigskip
+  \begin{itemize}
+  \item Imagine some Blocksworld planning problem \dots
+    \smallskip
+  \item \structure{Code snippet}
+\begin{lstlisting}
+ ngoal(T) :- on(B,L,T), not goal_on(B,L).
+ :- ngoal(n).
+\end{lstlisting}
+    where \texttt{n} is a fixed horizon
+    \medskip
+  \item<2-> \structure{Optimization}
+\begin{lstlisting}
+ _minimize(1,T) :- ngoal(T).
+\end{lstlisting}
+  \end{itemize}
+\end{frame}
+% ----------------------------------------------------------------------
+\begin{frame}[fragile,shrink]{Optimization}
+  \lstinputlisting[language=python]{opt.py}
+\end{frame}
+% ----------------------------------------------------------------------
+\begin{frame}[fragile,shrink=37]{Optimization, zoom on \texttt{main}}
+  \bigskip
+  \lstinputlisting[language=python,linerange=29-46]{opt.py}
+\end{frame}
+% ----------------------------------------------------------------------
+\begin{frame}[fragile,shrink=25]{Optimization, zoom on \texttt{\_on\_model}}
+  \bigskip
+  \lstinputlisting[language=python,linerange=22-27]{opt.py}
+\end{frame}
+%
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../asp"
+%%% End:

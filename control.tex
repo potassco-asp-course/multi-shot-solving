@@ -1,0 +1,181 @@
+% ----------------------------------------------------------------------
+\begin{frame}{Taming the ASP system, imperatively}
+  \bigskip
+  \begin{itemize}
+  \item Three alternative ways of combining ASP with other languages,
+
+    either via
+    \begin{itemize}\normalsize
+    \item embedded script
+    \item module import
+    \item application class
+    \end{itemize}
+    \bigskip
+  \item We use \python, although other choices exist
+  \end{itemize}
+\end{frame}
+% ----------------------------------------------------------------------
+\begin{frame}[fragile]{An example}
+  \bigskip
+  \begin{itemize}
+  \item<1-> \structure{Input program}  \texttt{example.lp}
+\begin{lstlisting}
+num(3).
+num(6).
+div(N,@divisors(N)) :- num(N).
+\end{lstlisting}
+  \bigskip
+  \item<2-> \structure{Resulting program}
+\begin{lstlisting}
+num(3).
+num(6).
+div(3,(1;3)).
+div(6,(1;2;3;6)).
+\end{lstlisting}
+  \end{itemize}
+\end{frame}
+% ----------------------------------------------------------------------
+\begin{frame}[fragile]{Embedded script (\texttt{embedded.lp})}
+  \bigskip
+\begin{lstlisting}
+#script (python)
+
+import clingo
+
+def divisors(a):
+    a = a.number
+    for i in range(1, a+1):
+        if a % i == 0:
+          yield clingo.Number(i)
+
+#end.
+\end{lstlisting}
+\end{frame}
+% ----------------------------------------------------------------------
+\begin{frame}[fragile]{Embedded script, running}
+  \bigskip
+\begin{lstlisting}
+$ clingo example.lp embedded.lp
+clingo version 5.5.0
+Reading from example.lp ...
+Solving...
+Answer: 1
+num(3) num(6) div(3,1) div(3,3) \
+div(6,1) div(6,2) div(6,3) div(6,6)
+SATISFIABLE
+\end{lstlisting}
+\end{frame}
+% ----------------------------------------------------------------------
+\begin{frame}[fragile,shrink]{Module import (\texttt{module.py})}
+\begin{lstlisting}
+import clingo
+
+class ExampleApp:
+    @staticmethod
+    def divisors(a):
+        a = a.number
+        for i in range(1, a+1):
+            if a % i == 0:
+              yield clingo.Number(i)
+
+    def run(self):
+        ctl = clingo.Control()
+        ctl.load("example.lp")
+        ctl.ground([("base", [])], context=self)
+        ctl.solve(on_model=print)
+
+if __name__ == "__main__":
+    ExampleApp().run()
+\end{lstlisting}
+\end{frame}
+% ----------------------------------------------------------------------
+\begin{frame}[fragile]{Embedded script, running}
+  \bigskip
+\begin{lstlisting}
+$ python module.py
+num(3) num(6) div(3,1) div(3,3) \
+div(6,1) div(6,2) div(6,3) div(6,6)
+\end{lstlisting}
+\end{frame}
+% ----------------------------------------------------------------------
+\begin{frame}[fragile,shrink]{Application class (\texttt{app.py})}
+\begin{lstlisting}
+import sys
+import clingo
+
+class ExampleApp(clingo.Application):
+    program_name = "example"
+    version = "1.0"
+
+    @staticmethod
+    def divisors(a):
+        a = a.number
+        for i in range(1, a+1):
+            if a % i == 0:
+                yield clingo.Number(i)
+
+    def main(self, ctl, files):
+        for path in files: ctl.load(path)
+        if not files:
+            ctl.load("-")
+        ctl.ground([("base", [])], context=self)
+        ctl.solve()
+
+if __name__ == "__main__":
+    clingo.clingo_main(ExampleApp(), sys.argv[1:])
+\end{lstlisting}
+\end{frame}
+% ----------------------------------------------------------------------
+\begin{frame}[fragile]{Application class, running}
+  \bigskip
+\begin{lstlisting}
+$ python app.py example.lp
+example version 1.0
+Reading from example.lp
+Solving...
+Answer: 1
+num(3) num(6) div(3,1) div(3,3) \
+div(6,1) div(6,2) div(6,3) div(6,6)
+SATISFIABLE
+\end{lstlisting}
+\end{frame}
+% ----------------------------------------------------------------------
+\begin{frame}{What to use when\dots?}
+  \begin{itemize}
+  \item \structure{embedded script}
+
+    \begin{itemize}
+    \item suitable for small amendments to the logic program,
+
+      anything on the term level during grounding
+
+    \item perform calculations that are hard or inconvenient to express in ASP
+    \end{itemize}
+    \smallskip
+  \item \structure{module import}
+
+    \begin{itemize}
+    \item convenient way to use \clingo\ as part of a larger project
+    \item provides high level functions to control grounding and solving
+    \item surrounding application is in charge of the control flow and
+      \\ ASP is used to perform specific computations
+    \end{itemize}
+    \smallskip
+  \item \structure{application class}
+
+    \begin{itemize}
+    \item aims at building custom systems based on \clingo
+    \item similar to module import but with more customization capabilities
+    \end{itemize}
+
+  \item [] \ \structure{\Large\ithand} constitutes the cornerstone of recent \clingo-based systems
+
+    \qquad such as \clingcon, \clingoM{dl}, \eclingo, and \telingo
+  \end{itemize}
+\end{frame}
+% ----------------------------------------------------------------------
+%
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../asp"
+%%% End:
