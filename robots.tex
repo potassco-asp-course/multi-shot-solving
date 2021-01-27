@@ -1,10 +1,9 @@
-% \subsection{Playing in rounds}
 % ------------------------------------------------------------
 \begin{frame}[c]{Alex Rudolph's Ricochet Robots\\[-5pt]\footnotesize
     \uncover<4->{Solving \lstinline{goal(13)} from cornered robots}}
-  \bigskip\qquad\includegraphics[width=0.45\textwidth]{msolving/snapshots/goal13a.png}
+  \bigskip\qquad\includegraphics[width=0.45\textwidth]{snapshots/goal13a.png}
   % \hspace{0.08\textwidth}
-  % \includegraphics[width=0.45\textwidth]{mSolving/snapshots/goal13z.png}
+  % \includegraphics[width=0.45\textwidth]{snapshots/goal13z.png}
   \qquad
   \begin{minipage}[b]{0.4\linewidth}
     \begin{itemize}
@@ -25,28 +24,28 @@
 % ------------------------------------------------------------
 \begin{frame}{Solving \lstinline{goal(13)} from cornered robots (ctd)}
   \bigskip\quad
-  \only<1->{\includegraphics[width=0.2\textwidth]{msolving/snapshots/move1.png}}\quad
-  \only<2->{\includegraphics[width=0.2\textwidth]{msolving/snapshots/move2.png}}\quad
-  \only<3->{\includegraphics[width=0.2\textwidth]{msolving/snapshots/move3.png}}\quad
-  \only<4->{\includegraphics[width=0.2\textwidth]{msolving/snapshots/move4.png}}
+  \only<1->{\includegraphics[width=0.2\textwidth]{snapshots/move1.png}}\quad
+  \only<2->{\includegraphics[width=0.2\textwidth]{snapshots/move2.png}}\quad
+  \only<3->{\includegraphics[width=0.2\textwidth]{snapshots/move3.png}}\quad
+  \only<4->{\includegraphics[width=0.2\textwidth]{snapshots/move4.png}}
   \\\bigskip\quad
-  \only<5->{\includegraphics[width=0.2\textwidth]{msolving/snapshots/move5.png}}\quad
-  \only<6->{\includegraphics[width=0.2\textwidth]{msolving/snapshots/move6.png}}\quad
-  \only<7->{\includegraphics[width=0.2\textwidth]{msolving/snapshots/move7.png}}\quad
-  \only<8->{\includegraphics[width=0.2\textwidth]{msolving/snapshots/move8.png}}
+  \only<5->{\includegraphics[width=0.2\textwidth]{snapshots/move5.png}}\quad
+  \only<6->{\includegraphics[width=0.2\textwidth]{snapshots/move6.png}}\quad
+  \only<7->{\includegraphics[width=0.2\textwidth]{snapshots/move7.png}}\quad
+  \only<8->{\includegraphics[width=0.2\textwidth]{snapshots/move8.png}}
 \end{frame}
 % ------------------------------------------------------------
 \begin{frame}[fragile]{\texttt{board.lp}}
 \bigskip
-\lstinputlisting[basicstyle=\ttfamily\tiny]{msolving/board.lp}
+\lstinputlisting[basicstyle=\ttfamily\tiny]{encodings/board.lp}
 \end{frame}
 \begin{frame}[fragile]{\texttt{targets.lp}}
 \bigskip
-\lstinputlisting[basicstyle=\ttfamily\tiny]{msolving/targets.lp}
+\lstinputlisting[basicstyle=\ttfamily\tiny]{encodings/targets.lp}
 \end{frame}
 \begin{frame}[fragile]{\texttt{ricochet.lp}}
 \bigskip
-\lstinputlisting[basicstyle=\ttfamily\tiny]{msolving/ricochet.lp}
+\lstinputlisting[basicstyle=\ttfamily\tiny]{encodings/ricochet.lp}
 \end{frame}
 % ------------------------------------------------------------
 \begin{frame}[fragile]{Solving \lstinline{goal(13)} from cornered robots}
@@ -87,7 +86,7 @@ CPU Time     : 2.800s
 % ------------------------------------------------------------
 \begin{frame}[fragile]{\texttt{optimization.lp}}
 \bigskip
-\lstinputlisting[basicstyle=\ttfamily\tiny]{msolving/optimization.lp}
+\lstinputlisting[basicstyle=\ttfamily\tiny]{encodings/optimization.lp}
 \end{frame}
 % ------------------------------------------------------------
 \begin{frame}[fragile,fragile]{Solving \lstinline{goal(13)} from cornered robots}
@@ -128,14 +127,14 @@ CPU Time     : 16.080s
 % ------------------------------------------------------------
 \begin{frame}[c]{Playing in rounds}
   \makebox[100pt][l]{Round 1: \texttt{goal(13)}} \qquad
-  \includegraphics[height=0.35\textheight]{msolving/snapshots/goal13a.png}
+  \includegraphics[height=0.35\textheight]{snapshots/goal13a.png}
   \qquad
-  \includegraphics[height=0.35\textheight]{msolving/snapshots/goal13z.png}
+  \includegraphics[height=0.35\textheight]{snapshots/goal13z.png}
   \par\bigskip
   \makebox[100pt][l]{Round 2: \texttt{goal(4)}} \qquad
-  \includegraphics[height=0.35\textheight]{msolving/snapshots/goal4a.png}
+  \includegraphics[height=0.35\textheight]{snapshots/goal4a.png}
   \qquad
-  \includegraphics[height=0.35\textheight]{msolving/snapshots/goal4z.png}
+  \includegraphics[height=0.35\textheight]{snapshots/goal4z.png}
 \end{frame}
 % ------------------------------------------------------------
 \begin{frame}[c]{Control loop}
@@ -576,7 +575,8 @@ for goal in sequence:
 \end{semiverbatim}
 \end{frame}
 % ------------------------------------------------------------
+%
 %%% Local Variables:
 %%% mode: latex
-%%% TeX-master: "../asp"
+%%% TeX-master: "../../main"
 %%% End:
