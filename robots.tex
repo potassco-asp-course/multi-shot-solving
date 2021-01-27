@@ -1,0 +1,582 @@
+% \subsection{Playing in rounds}
+% ------------------------------------------------------------
+\begin{frame}[c]{Alex Rudolph's Ricochet Robots\\[-5pt]\footnotesize
+    \uncover<4->{Solving \lstinline{goal(13)} from cornered robots}}
+  \bigskip\qquad\includegraphics[width=0.45\textwidth]{msolving/snapshots/goal13a.png}
+  % \hspace{0.08\textwidth}
+  % \includegraphics[width=0.45\textwidth]{mSolving/snapshots/goal13z.png}
+  \qquad
+  \begin{minipage}[b]{0.4\linewidth}
+    \begin{itemize}
+    \item<2-> Four robots
+    \item<2->[] roaming
+      \begin{itemize}
+      \item horizontally
+      \item vertically
+      \end{itemize}
+      up to blocking objects,
+    \item<2->[] ricocheting (optionally)
+    \item<2-> []
+    \item<3-> \structure{Goal} Robot on target\par (sharing same color)
+    \item []
+    \end{itemize}
+  \end{minipage}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}{Solving \lstinline{goal(13)} from cornered robots (ctd)}
+  \bigskip\quad
+  \only<1->{\includegraphics[width=0.2\textwidth]{msolving/snapshots/move1.png}}\quad
+  \only<2->{\includegraphics[width=0.2\textwidth]{msolving/snapshots/move2.png}}\quad
+  \only<3->{\includegraphics[width=0.2\textwidth]{msolving/snapshots/move3.png}}\quad
+  \only<4->{\includegraphics[width=0.2\textwidth]{msolving/snapshots/move4.png}}
+  \\\bigskip\quad
+  \only<5->{\includegraphics[width=0.2\textwidth]{msolving/snapshots/move5.png}}\quad
+  \only<6->{\includegraphics[width=0.2\textwidth]{msolving/snapshots/move6.png}}\quad
+  \only<7->{\includegraphics[width=0.2\textwidth]{msolving/snapshots/move7.png}}\quad
+  \only<8->{\includegraphics[width=0.2\textwidth]{msolving/snapshots/move8.png}}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{\texttt{board.lp}}
+\bigskip
+\lstinputlisting[basicstyle=\ttfamily\tiny]{msolving/board.lp}
+\end{frame}
+\begin{frame}[fragile]{\texttt{targets.lp}}
+\bigskip
+\lstinputlisting[basicstyle=\ttfamily\tiny]{msolving/targets.lp}
+\end{frame}
+\begin{frame}[fragile]{\texttt{ricochet.lp}}
+\bigskip
+\lstinputlisting[basicstyle=\ttfamily\tiny]{msolving/ricochet.lp}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{Solving \lstinline{goal(13)} from cornered robots}
+\tiny
+% clingo board.lp targets.lp ricochet.lp -c horizon=9 <(echo "pos(red,1,1).  pos(green,16,1). pos(blue,1,16). pos(yellow,16,16).  goal(13).")
+\begin{semiverbatim}
+\$ clingo board.lp targets.lp ricochet.lp -c horizon=9 \\
+        <(echo "pos(red,1,1). pos(green,16,1). pos(blue,1,16). pos(yellow,16,16).   goal(13).")\pause
+
+clingo version 4.5.0
+Reading from board.lp ...
+Solving...
+Answer: 1
+move(red,0,1,1)     move(red,1,0,2) move(red,0,1,3)    move(red,-1,0,4) move(red,0,1,5) \\
+move(yellow,0,-1,6) move(red,1,0,7) move(yellow,0,1,8) move(yellow,-1,0,9)
+SATISFIABLE
+
+Models       : 1+
+Calls        : 1
+Time         : 1.895s (Solving: 1.45s 1st Model: 1.45s Unsat: 0.00s)
+CPU Time     : 1.880s\pause
+
+
+\$ clingo board.lp targets.lp ricochet.lp -c horizon=8 \\
+        <(echo "pos(red,1,1). pos(green,16,1). pos(blue,1,16). pos(yellow,16,16).   goal(13).")\pause
+
+clingo version 4.5.0
+Reading from board.lp ...
+Solving...
+UNSATISFIABLE
+
+Models       : 0
+Calls        : 1
+Time         : 2.817s (Solving: 2.41s 1st Model: 0.00s Unsat: 2.41s)
+CPU Time     : 2.800s
+\end{semiverbatim}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{\texttt{optimization.lp}}
+\bigskip
+\lstinputlisting[basicstyle=\ttfamily\tiny]{msolving/optimization.lp}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile,fragile]{Solving \lstinline{goal(13)} from cornered robots}
+\tiny\vspace{-5pt}
+\begin{semiverbatim}
+\$ clingo board.lp targets.lp ricochet.lp optimization.lp -c horizon=20 --quiet=1,0 \\
+        <(echo "pos(red,1,1). pos(green,16,1). pos(blue,1,16). pos(yellow,16,16).   goal(13).")\pause
+clingo version 4.5.0
+Reading from board.lp ...
+Solving...
+Optimization: 20
+Optimization: 19
+Optimization: 18
+Optimization: 17
+Optimization: 16
+Optimization: 15
+Optimization: 14
+Optimization: 13
+Optimization: 12
+Optimization: 11
+Optimization: 10
+Optimization: 9
+Answer: 12
+\alert<2>{move(blue,0,-1,1)   move(blue,1,0,2)    move(yellow,0,-1,3) move(blue,0,1,4)    move(yellow,-1,0,5) \\
+move(blue,1,0,6)    move(blue,0,-1,7)   move(yellow,1,0,8)  move(yellow,0,1,9)}  move(yellow,0,1,10) \\
+move(yellow,0,1,11) move(yellow,0,1,12) move(yellow,0,1,13) move(yellow,0,1,14) move(yellow,0,1,15) \\
+move(yellow,0,1,16) move(yellow,0,1,17) move(yellow,0,1,18) move(yellow,0,1,19) move(yellow,0,1,20)
+OPTIMUM FOUND
+
+Models       : 12
+  Optimum    : yes
+Optimization : 9
+Calls        : 1
+Time         : 16.145s (Solving: 15.01s 1st Model: 3.35s Unsat: 2.02s)
+CPU Time     : 16.080s
+\end{semiverbatim}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[c]{Playing in rounds}
+  \makebox[100pt][l]{Round 1: \texttt{goal(13)}} \qquad
+  \includegraphics[height=0.35\textheight]{msolving/snapshots/goal13a.png}
+  \qquad
+  \includegraphics[height=0.35\textheight]{msolving/snapshots/goal13z.png}
+  \par\bigskip
+  \makebox[100pt][l]{Round 2: \texttt{goal(4)}} \qquad
+  \includegraphics[height=0.35\textheight]{msolving/snapshots/goal4a.png}
+  \qquad
+  \includegraphics[height=0.35\textheight]{msolving/snapshots/goal4z.png}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[c]{Control loop}
+\begin{enumerate}
+\item Create an operational \clingo\ object
+\smallskip
+\item Load and ground the logic programs encoding Ricochet Robot
+  (relative to some fixed \lstinline{horizon})
+  within the control object
+\smallskip
+\item While there is a goal, do the following
+  \begin{enumerate}\normalsize
+  \item Enforce the initial robot positions
+  \item Enforce the current goal
+  \item Solve the logic program contained in the control object
+  \end{enumerate}
+\end{enumerate}
+\bigskip
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{Ricochet Robot Player\\[-5pt]\large\texttt{ricochet.py}}
+\Tiny\vspace{-15pt}
+\begin{semiverbatim}
+from gringo import Control, Model, Fun
+
+class Player:
+    def __init__(self, horizon, positions, files):
+        self.last_positions = positions
+        self.last_solution = None
+        self.undo_external = []
+        self.horizon = horizon
+        self.ctl = Control(['-c', 'horizon=\{0\}'.format(self.horizon)])
+        for x in files:
+            self.ctl.load(x)
+        self.ctl.ground([("base", [])])
+
+    def solve(self, goal):
+        for x in self.undo_external:
+            self.ctl.assign_external(x, False)
+        self.undo_external = []
+        for x in self.last_positions + [goal]:
+            self.ctl.assign_external(x, True)
+            self.undo_external.append(x)
+        self.last_solution = None
+        self.ctl.solve(on_model=self.on_model)
+        return self.last_solution
+
+    def on_model(self, model):
+        self.last_solution = model.atoms()
+        self.last_positions = []
+        for atom in model.atoms(Model.ATOMS):
+            if (atom.name() == "pos" and len(atom.args()) == 4 and atom.args()[3] == self.horizon):
+                self.last_positions.append(Fun("pos", atom.args()[:-1]))
+
+horizon   = 15
+encodings = ["board.lp", "targets.lp", "ricochet.lp", "optimization.lp"]
+positions = [Fun("pos", [Fun("red"),     1,  1]), Fun("pos", [Fun("blue"),    1, 16]),
+             Fun("pos", [Fun("green"),  16,  1]), Fun("pos", [Fun("yellow"), 16, 16])]
+sequence  = [Fun("goal", [13]), Fun("goal", [4]), Fun("goal", [7])]
+
+player = Player(horizon, positions, encodings)
+for goal in sequence:
+    print player.solve(goal)
+\end{semiverbatim}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}{Variables of interest}
+  \small\bigskip
+  \begin{itemize}
+  \item<2-> \structure{\ttfamily last\_positions}
+    holds the starting positions of the robots for each turn
+    \smallskip
+  \item<3-> \structure{\ttfamily last\_solution}
+    holds the last solution of a search call
+    %We use this member variable
+    %because the gringo module offers (among others) an interface using callbacks,
+    %which does not provide direct means to return values from within a callback.
+    %A callback can be any python function though.
+    %This allows us to pass a closure having a reference to the player object,
+    %which in turn allows us to access the [{\ttfamily last\_solution}] member variable
+    %- and hence to keep our data well organized.
+    \par
+    (Note that callbacks cannot return values directly)
+    \smallskip
+  \item<4-> \structure{\ttfamily undo\_external}
+    holds a list containing the current goal and starting positions
+    to be cleared upon the next step
+    \smallskip
+  \item<5-> \structure{\ttfamily horizon}
+    holds the maximum number of moves to find a solution
+    \smallskip
+  \item<6-> \structure{\ttfamily ctl}
+    holds the actual object providing an interface to the grounder and solver;
+    it holds all state information necessary for multi-shot solving
+    % along with heuristic information gathered during solving
+  \end{itemize}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{Ricochet Robot Player\\[-5pt]\large Setup and control loop}
+\Tiny\vspace{-15pt}
+\begin{semiverbatim}
+from gringo import Control, Model, Fun
+
+class Player:
+    def __init__(self, horizon, positions, files):
+        self.last_positions = positions
+        self.last_solution = None
+        self.undo_external = []
+        self.horizon = horizon
+        self.ctl = Control(['-c', 'horizon=\{0\}'.format(self.horizon)])
+        for x in files:
+            self.ctl.load(x)
+        self.ctl.ground([("base", [])])
+
+    def solve(self, goal):
+        for x in self.undo_external:
+            self.ctl.assign_external(x, False)
+        self.undo_external = []
+        for x in self.last_positions + [goal]:
+            self.ctl.assign_external(x, True)
+            self.undo_external.append(x)
+        self.last_solution = None
+        self.ctl.solve(on_model=self.on_model)
+        return self.last_solution
+
+    def on_model(self, model):
+        self.last_solution = model.atoms()
+        self.last_positions = []
+        for atom in model.atoms(Model.ATOMS):
+            if (atom.name() == "pos" and len(atom.args()) == 4 and atom.args()[3] == self.horizon):
+                self.last_positions.append(Fun("pos", atom.args()[:-1]))
+
+\alert{horizon   = 15
+encodings = ["board.lp", "targets.lp", "ricochet.lp", "optimization.lp"]
+positions = [Fun("pos", [Fun("red"),     1,  1]), Fun("pos", [Fun("blue"),    1, 16]),
+             Fun("pos", [Fun("green"),  16,  1]), Fun("pos", [Fun("yellow"), 16, 16])]
+sequence  = [Fun("goal", [13]), Fun("goal", [4]), Fun("goal", [7])]
+
+player = Player(horizon, positions, encodings)
+for goal in sequence:
+    print player.solve(goal)}
+\end{semiverbatim}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{Setup and control loop}
+\scriptsize
+\begin{semiverbatim}
+\only<2>{>>}\only<1,3->{  } \alert<2>{horizon   = 15}
+\only<2>{>>}\only<1,3->{  } \alert<2>{encodings = ["board.lp", "targets.lp", "ricochet.lp", "optimization.lp"]}
+\only<2>{>>}\only<1,3->{  } \alert<2>{positions = [Fun("pos", [Fun("red"),     1,  1]),}
+\only<2>{>>}\only<1,3->{  } \alert<2>{             Fun("pos", [Fun("blue"),    1, 16]),}
+\only<2>{>>}\only<1,3->{  } \alert<2>{             Fun("pos", [Fun("green"),  16,  1]),}
+\only<2>{>>}\only<1,3->{  } \alert<2>{             Fun("pos", [Fun("yellow"), 16, 16])]}
+\only<2>{>>}\only<1,3->{  } \alert<2>{sequence  = [Fun("goal", [13]),}
+\only<2>{>>}\only<1,3->{  } \alert<2>{             Fun("goal",  [4]),}
+\only<2>{>>}\only<1,3->{  } \alert<2>{             Fun("goal",  [7])]}
+
+\only<3>{>>}\only<-2,4->{  } \alert<2>{player = Player(horizon, positions, encodings)}
+\only<4>{>>}\only<-3,5->{  } \alert<2>{for goal in sequence:}
+\only<4>{>>}\only<-3,5->{  } \alert<2>{    print player.solve(goal)}
+\end{semiverbatim}
+\normalsize
+\begin{enumerate}
+\item<2-> Initializing variables
+\item<3-> Creating a player object (wrapping a \clingo\ object)
+\item<4-> Playing in rounds
+\end{enumerate}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{Ricochet Robot Player\\[-5pt]\large\texttt{\_\_init\_\_}}
+\Tiny\vspace{-15pt}
+\begin{semiverbatim}
+from gringo import Control, Model, Fun
+
+class Player:
+\alert{    def __init__(self, horizon, positions, files):
+        self.last_positions = positions
+        self.last_solution = None
+        self.undo_external = []
+        self.horizon = horizon
+        self.ctl = Control(['-c', 'horizon=\{0\}'.format(self.horizon)])
+        for x in files:
+            self.ctl.load(x)
+        self.ctl.ground([("base", [])])}
+
+    def solve(self, goal):
+        for x in self.undo_external:
+            self.ctl.assign_external(x, False)
+        self.undo_external = []
+        for x in self.last_positions + [goal]:
+            self.ctl.assign_external(x, True)
+            self.undo_external.append(x)
+        self.last_solution = None
+        self.ctl.solve(on_model=self.on_model)
+        return self.last_solution
+
+    def on_model(self, model):
+        self.last_solution = model.atoms()
+        self.last_positions = []
+        for atom in model.atoms(Model.ATOMS):
+            if (atom.name() == "pos" and len(atom.args()) == 4 and atom.args()[3] == self.horizon):
+                self.last_positions.append(Fun("pos", atom.args()[:-1]))
+
+horizon   = 15
+encodings = ["board.lp", "targets.lp", "ricochet.lp", "optimization.lp"]
+positions = [Fun("pos", [Fun("red"),     1,  1]), Fun("pos", [Fun("blue"),    1, 16]),
+             Fun("pos", [Fun("green"),  16,  1]), Fun("pos", [Fun("yellow"), 16, 16])]
+sequence  = [Fun("goal", [13]), Fun("goal", [4]), Fun("goal", [7])]
+
+player = Player(horizon, positions, encodings)
+for goal in sequence:
+    print player.solve(goal)
+\end{semiverbatim}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{\texttt{\_\_init\_\_}}
+\scriptsize
+\begin{semiverbatim}
+    def \alert<1>{__init__}(self, horizon, positions, files):
+\only<2>{>>}\only<1,3->{  }      \alert<2>{self.last_positions = positions}
+\only<2>{>>}\only<1,3->{  }      \alert<2>{self.last_solution = None}
+\only<2>{>>}\only<1,3->{  }      \alert<2>{self.undo_external = []}
+\only<2>{>>}\only<1,3->{  }      \alert<2>{self.horizon = horizon}
+\only<3>{>>}\only<-2,4->{  }      \alert<3>{self.ctl = \alert<6>{Control}(['-c', 'horizon=\{0\}'.format(self.horizon)])}
+\only<4>{>>}\only<-3,5->{  }      \alert<4>{for x in files:}
+\only<4>{>>}\only<-3,5->{  }          \alert<4>{self.ctl.\alert<6>{load}(x)}
+\only<5>{>>}\only<-4,6->{  }      \alert<5>{self.ctl.\alert<6>{ground}([("base", [])])}
+\end{semiverbatim}
+\normalsize
+\begin{enumerate}
+\item<2-> Initializing variables
+\item<3-> Creating \clingo\ object
+\item<4-> Loading encoding and instance
+\item<5-> Grounding encoding and instance
+\end{enumerate}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{Ricochet Robot Player\\[-5pt]\large\texttt{solve}}
+\Tiny\vspace{-15pt}
+\begin{semiverbatim}
+from gringo import Control, Model, Fun
+
+class Player:
+    def __init__(self, horizon, positions, files):
+        self.last_positions = positions
+        self.last_solution = None
+        self.undo_external = []
+        self.horizon = horizon
+        self.ctl = Control(['-c', 'horizon=\{0\}'.format(self.horizon)])
+        for x in files:
+            self.ctl.load(x)
+        self.ctl.ground([("base", [])])
+
+\alert{    def solve(self, goal):
+        for x in self.undo_external:
+            self.ctl.assign_external(x, False)
+        self.undo_external = []
+        for x in self.last_positions + [goal]:
+            self.ctl.assign_external(x, True)
+            self.undo_external.append(x)
+        self.last_solution = None
+        self.ctl.solve(on_model=self.on_model)
+        return self.last_solution}
+
+    def on_model(self, model):
+        self.last_solution = model.atoms()
+        self.last_positions = []
+        for atom in model.atoms(Model.ATOMS):
+            if (atom.name() == "pos" and len(atom.args()) == 4 and atom.args()[3] == self.horizon):
+                self.last_positions.append(Fun("pos", atom.args()[:-1]))
+
+horizon   = 15
+encodings = ["board.lp", "targets.lp", "ricochet.lp", "optimization.lp"]
+positions = [Fun("pos", [Fun("red"),     1,  1]), Fun("pos", [Fun("blue"),    1, 16]),
+             Fun("pos", [Fun("green"),  16,  1]), Fun("pos", [Fun("yellow"), 16, 16])]
+sequence  = [Fun("goal", [13]), Fun("goal", [4]), Fun("goal", [7])]
+
+player = Player(horizon, positions, encodings)
+for goal in sequence:
+    print player.solve(goal)
+\end{semiverbatim}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{\texttt{solve}}
+\scriptsize
+\begin{semiverbatim}
+    def \alert<1>{solve}(self, goal):
+\only<2>{>>}\only<1,3->{  }        \alert<2>{for x in self.undo_external:}
+\only<2>{>>}\only<1,3->{  }            \alert<2>{self.ctl.\alert<6>{assign_external}(x, False)}
+\only<3>{>>}\only<-2,4->{  }        \alert<3>{self.undo_external = []}
+\only<3>{>>}\only<-2,4->{  }        \alert<3>{for x in self.last_positions + [goal]:}
+\only<3>{>>}\only<-2,4->{  }            \alert<3>{self.ctl.\alert<6>{assign_external}(x, True)}
+\only<3>{>>}\only<-2,4->{  }            \alert<3>{self.undo_external.append(x)}
+\only<4>{>>}\only<-3,5->{  }        \alert<4>{self.last_solution = None}
+\only<4>{>>}\only<-3,5->{  }        \alert<4>{self.ctl.\alert<6>{solve}(\alert<5>{\alert<6>{on_model}=self.on_model})}
+\only<4>{>>}\only<-3,5->{  }        \alert<4>{return self.last_solution}
+\end{semiverbatim}
+\normalsize
+\begin{enumerate}
+\item<2-> Unsetting previous external atoms\hfill (viz.\ previous goal and positions)
+\item<3-> Setting next external atoms\hfill (viz.\ next goal and positions)
+\item<4-> Computing next stable model
+  \par\pause[5] by passing user-defined \alert<5>{\texttt{on\_model}} method
+\end{enumerate}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{Ricochet Robot Player\\[-5pt]\large\texttt{on\_model}}
+\Tiny\vspace{-15pt}
+\begin{semiverbatim}
+from gringo import Control, Model, Fun
+
+class Player:
+    def __init__(self, horizon, positions, files):
+        self.last_positions = positions
+        self.last_solution = None
+        self.undo_external = []
+        self.horizon = horizon
+        self.ctl = Control(['-c', 'horizon=\{0\}'.format(self.horizon)])
+        for x in files:
+            self.ctl.load(x)
+        self.ctl.ground([("base", [])])
+
+    def solve(self, goal):
+        for x in self.undo_external:
+            self.ctl.assign_external(x, False)
+        self.undo_external = []
+        for x in self.last_positions + [goal]:
+            self.ctl.assign_external(x, True)
+            self.undo_external.append(x)
+        self.last_solution = None
+        self.ctl.solve(on_model=self.on_model)
+        return self.last_solution
+
+\alert{    def on_model(self, model):
+        self.last_solution = model.atoms()
+        self.last_positions = []
+        for atom in model.atoms(Model.ATOMS):
+            if (atom.name() == "pos" and len(atom.args()) == 4 and atom.args()[3] == self.horizon):
+                self.last_positions.append(Fun("pos", atom.args()[:-1]))}
+
+horizon   = 15
+encodings = ["board.lp", "targets.lp", "ricochet.lp", "optimization.lp"]
+positions = [Fun("pos", [Fun("red"),     1,  1]), Fun("pos", [Fun("blue"),    1, 16]),
+             Fun("pos", [Fun("green"),  16,  1]), Fun("pos", [Fun("yellow"), 16, 16])]
+sequence  = [Fun("goal", [13]), Fun("goal", [4]), Fun("goal", [7])]
+
+player = Player(horizon, positions, encodings)
+for goal in sequence:
+    print player.solve(goal)
+\end{semiverbatim}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{\texttt{on\_model}}
+\scriptsize
+\begin{semiverbatim}
+    def \alert<2>{on_model}(self, model):
+\only<2>{>>}\only<1,3->{  }        \alert<2>{self.last_solution = \alert<6>{model.atoms}()}
+\only<3-4>{>>}\only<-2,5->{  }        \alert<3>{self.last_positions = []}
+\only<3-4>{>>}\only<-2,5->{  }        \alert<3>{for atom in \alert<6>{model.atoms}(\alert<6>{Model.ATOMS}):}
+\only<3-4>{>>}\only<-2,5->{  }            \alert<3>{if (\alert<6>{atom.name}() == "pos" and }
+\only<3-4>{>>}\only<-2,5->{  }                    \alert<3>{len(\alert<6>{atom.args}()) == 4 and }
+\only<3-4>{>>}\only<-2,5->{  }                    \alert<3>{\alert<6>{atom.args}()[3] == self.horizon):}
+\only<3-4>{>>}\only<-2,5->{  }                \alert<3>{self.last_positions.append(\alert<6>{Fun}("pos", \alert<6>{atom.args}()[:-1]))}
+\end{semiverbatim}
+\normalsize
+\begin{enumerate}
+\item<2-> Storing stable model
+\item<3-> Extracting atoms \hfill (viz.\ last robot positions)
+  \par\pause[4]
+  by adding \ \texttt{pos(R,X,Y)} \ for each \ \texttt{pos(R,X,Y,horizon)}
+\end{enumerate}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{\texttt{ricochet.py}}
+\Tiny\vspace{-15pt}
+\begin{semiverbatim}
+from gringo import Control, Model, Fun
+
+class Player:
+    def __init__(self, horizon, positions, files):
+        self.last_positions = positions
+        self.last_solution = None
+        self.undo_external = []
+        self.horizon = horizon
+        self.ctl = Control(['-c', 'horizon=\{0\}'.format(self.horizon)])
+        for x in files:
+            self.ctl.load(x)
+        self.ctl.ground([("base", [])])
+
+    def solve(self, goal):
+        for x in self.undo_external:
+            self.ctl.assign_external(x, False)
+        self.undo_external = []
+        for x in self.last_positions + [goal]:
+            self.ctl.assign_external(x, True)
+            self.undo_external.append(x)
+        self.last_solution = None
+        self.ctl.solve(on_model=self.on_model)
+        return self.last_solution
+
+    def on_model(self, model):
+        self.last_solution = model.atoms()
+        self.last_positions = []
+        for atom in model.atoms(Model.ATOMS):
+            if (atom.name() == "pos" and len(atom.args()) == 4 and atom.args()[3] == self.horizon):
+                self.last_positions.append(Fun("pos", atom.args()[:-1]))
+
+horizon   = 15
+encodings = ["board.lp", "targets.lp", "ricochet.lp", "optimization.lp"]
+positions = [Fun("pos", [Fun("red"),     1,  1]), Fun("pos", [Fun("blue"),    1, 16]),
+             Fun("pos", [Fun("green"),  16,  1]), Fun("pos", [Fun("yellow"), 16, 16])]
+sequence  = [Fun("goal", [13]), Fun("goal", [4]), Fun("goal", [7])]
+
+player = Player(horizon, positions, encodings)
+for goal in sequence:
+    print player.solve(goal)
+\end{semiverbatim}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{Let's play!}
+\scriptsize
+\begin{semiverbatim}
+\$ python ricochet.py\pause
+[move(red,0,1,1), move(yellow,-1,0,14), move(yellow,-1,0,12), move(yellow,-1,0,11),
+ move(yellow,-1,0,9), move(red,1,0,7), move(red,1,0,2), move(yellow,-1,0,10),
+ move(yellow,-1,0,13), move(yellow,-1,0,15), move(red,-1,0,4), move(yellow,0,-1,6),
+ move(red,0,1,3), move(red,0,1,5), move(yellow,0,1,8)]
+[move(blue,0,1,15), move(blue,0,1,11), move(blue,0,1,8), move(blue,0,1,3),
+ move(blue,1,0,2), move(blue,0,1,9), move(blue,-1,0,7), move(blue,0,1,10),
+ move(blue,0,1,13), move(blue,-1,0,4), move(blue,0,-1,1), move(blue,0,-1,6),
+ move(green,-1,0,5), move(blue,0,1,12), move(blue,0,1,14)]
+[move(green,1,0,15), move(green,1,0,8), move(green,1,0,5), move(green,1,0,4),
+ move(green,1,0,3), move(green,1,0,10), move(green,1,0,7), move(green,1,0,12),
+ move(green,1,0,9), move(green,1,0,2), move(green,1,0,11), move(green,1,0,13),
+ move(green,1,0,6), move(green,1,0,14), move(green,0,1,1)]
+
+\pause\$ python robotviz
+\end{semiverbatim}
+\end{frame}
+% ------------------------------------------------------------
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../asp"
+%%% End:
