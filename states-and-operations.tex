@@ -1,0 +1,930 @@
+% ------------------------------------------------------------
+\section{States and operations}
+% ------------------------------------------------------------
+\begin{frame}{Clingo state}
+  \begin{itemize}
+  \item<1-> A \alert{\clingo\ state} is a triple
+    \[
+    ( \boldsymbol{R},\module{P},V )
+    \]
+    where
+
+    \begin{itemize}\normalsize
+    \item $\boldsymbol{R}\only<2->{=\left(\RRG_c\right)_{c\in\mathcal{C}}}$ is a collection of extensible (non-ground) logic programs
+      \only<2->{where $\mathcal{C}$ is the set of all non-integer constants}
+      \smallskip
+    \item $\module{P}$ is a module
+      \smallskip
+    \item $V\only<3->{=( V^t,V^u )}$ is a three-valued assignment over $\inp{\module{P}}$
+      \only<3->{\par where $V^f=\inp{\module{P}}\setminus (V^t\cup V^u)$}
+    \end{itemize}
+    \medskip
+  \item<only@4-> \structure{Note} Input atoms in $\inp{\module{P}}$ are taken to be false by default
+  \end{itemize}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}{create}
+  \begin{itemize}
+  \item $\mathit{create}(R): {} \mapsto ( \boldsymbol{R},\module{P},V )$
+    \smallskip
+  \item []
+    for a list $R$ of (non-ground) rules and declarations
+    \pause[2]%
+    where
+    \smallskip
+    \begin{itemize}\normalsize
+    \item $\boldsymbol{R}=\left(\RRG(c)\right)_{c\in\mathcal{C}}$
+    \item $\,\module{P} = (\emptyset,\emptyset,\emptyset)$
+    \item $V=(\emptyset,\emptyset)$
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}{add}
+  \begin{itemize}
+  \item $\mathit{add}(R): ( \boldsymbol{R}_1,\module{P},V )\mapsto( \boldsymbol{R}_2,\module{P},V )$
+    \smallskip
+  \item []
+    for a list $R$ of (non-ground) rules and declarations
+    \pause[2]%
+    where
+    \smallskip
+    \begin{itemize}\normalsize
+    \item $\boldsymbol{R}_1=\left(\RRG_c\right)_{c\in\mathcal{C}}$ and
+          $\boldsymbol{R}_2=\left(\RRG_c\cup\RRG(c)\right)_{c\in\mathcal{C}}$
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}{ground}
+  \begin{itemize}
+  \item $\mathit{ground}((n,\boldsymbol{p}_n)_{n\in N}): ( \boldsymbol{R},\module{P}_1,V_1 )\mapsto(\boldsymbol{R},\module{P}_2,V_2 )$
+    \smallskip
+  \item []
+    for a collection $(n,\boldsymbol{p}_n)_{n\in N}$ such that $N\subseteq\mathcal{C}$ and $\boldsymbol{p}_n\in\mathcal{T}^k$ for some $k$
+    \pause[2]%
+    \smallskip
+    where
+    \smallskip
+    \begin{itemize}\normalsize
+    \item $\module{P}_2=\module{P}_1\sqcup\inst{\module{R}}{\inp{\module{P}_1}\cup\out{\module{P}_1}}$
+      \par\smallskip
+      and
+      \inst{\module{R}}{\inp{\module{P}_1}\cup\out{\module{P}_1}}
+      is the module obtained from
+      \begin{itemize}\normalsize
+      \item extensible program
+        \(
+        \bigcup_{n\in N}R_n[\boldsymbol{p}/\boldsymbol{p}_n]
+        \)
+        and
+      \item atom base $\inp{\module{P}_1}\cup\out{\module{P}_1}$
+      \end{itemize}
+      for $\left(\RRG_c\right)_{c\in\mathcal{C}}=\boldsymbol{R}$
+      \smallskip
+    \item   $V_2^t\,=\{a\in\inp{\module{P}_2}\mid V_1(a)=t\,\}$
+    \item[] $V_2^u  =\{a\in\inp{\module{P}_2}\mid V_1(a)=u  \}$
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}{ground}
+  \begin{itemize}
+  \item \structure{Notes}
+    \begin{itemize}\normalsize
+    \item The external status of an atom is eliminated once it becomes defined by a rule in some added program
+      \par
+      This is accomplished by module composition, namely, the elimination of output atoms from input atoms
+    \smallskip
+    \item<2-> Jointly grounded subprograms are treated as a single subprogram
+    \smallskip
+    \item<3->  $\mathit{ground}((n,\boldsymbol{p}),(n,\boldsymbol{p}))(s)=\mathit{ground}((n,\boldsymbol{p}))(s)$ while
+        $\mathit{ground}((n,\boldsymbol{p}))(\mathit{ground}((n,\boldsymbol{p}))(s))$
+        leads to two non-compositional modules whenever $\head{R_n}\neq\emptyset$
+    \smallskip
+    \item<4-> Inputs stemming from added external declarations are set to false
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}{assignExternal}
+  \begin{itemize}
+  \item $\mathit{assignExternal}(a,v): ( \boldsymbol{R},\module{P},V_1 )\mapsto(\boldsymbol{R},\module{P},V_2 )$
+    \smallskip
+  \item [] for a ground atom $a$ and $v\in\{t,u,f\}$\pause[2] where
+    \medskip
+    \begin{itemize}\normalsize
+    \item if $v=t$
+      \begin{itemize}\normalsize
+      \item $V_2^t\,=V_1^t\cup\{a\}$ if $a\in\inp{\module{P}}$, and $V_2^t=V_1^t$ otherwise
+      \item $V_2^u  =V_1^u\setminus\{a\}$
+      \end{itemize}
+    \item if $v=u$
+      \begin{itemize}\normalsize
+      \item $V_2^t\,=V_1^t\,\setminus\{a\}$
+      \item $V_2^u  =V_1^u\cup\{a\}$ if $a\in\inp{\module{P}}$, and $V_2^u=V_1^u$ otherwise
+      \end{itemize}
+    \item if $v=f$
+      \begin{itemize}\normalsize
+      \item $V_2^t\,=V_1^t\setminus\{a\}$
+      \item $V_2^u  =V_1^u\setminus\{a\}$
+      \end{itemize}
+    \end{itemize}
+    \smallskip
+  \item<3-> \structure{Note} Only input atoms, that is, non-overwritten externals are affected
+  \end{itemize}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}{releaseExternal}
+  \begin{itemize}
+  \item $\mathit{releaseExternal}(a): ( \boldsymbol{R},\module{P}_1,V_1 )\mapsto(\boldsymbol{R},\module{P}_2 ,V_2 )$
+    \smallskip
+  \item []
+    for a ground atom~$a$
+    \pause[2]%
+    \smallskip
+    where
+    \smallskip
+    \begin{itemize}\normalsize
+    \item $\module{P}_2=(\prog{\module{P}_1},\inp{\module{P}_1}\setminus\{a\},\out{\module{P}_1}\cup\{a\})$ if $a\in\inp{\module{P}_1}$,
+      and $\module{P}_2=\module{P}_1$ otherwise
+    \item $V_2^t\,=V_1^t\,\setminus\{a\}$
+    \item [] $V_2^u  =V_1^u  \setminus\{a\}$
+    \end{itemize}
+  \item<3-> \structure{Notes}
+    \begin{itemize}
+    \item<3-> \textit{releaseExternal} only affects input atoms; defined atoms remain unaffected
+    \item<4-> A released atom can never be re-defined, neither by a rule nor an external declaration
+    \item<5-> A released (input) atom is made permanently false, since it is neither defined by any rule nor part of the input atoms
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}{solve}
+  \begin{itemize}
+  \item $\mathit{solve}(( A^t,A^f )): ( \boldsymbol{R},\module{P},V )\mapsto( \boldsymbol{R},\module{P},V )$
+    prints the set
+    \[
+    \{X\mid X\text{ is a stable model of }\module{P}\text{ wrt }V\text{ st }A^t\subseteq X\text{ and }A^f\cap X = \emptyset\}
+    \]
+    \pause[2]%
+    where the stable models of a module \module{P} wrt an assignment $V$
+    \par
+    are given by the stable models of the program
+    \[
+    \prog{\module{P}}\cup\{{a\leftarrow{}}\mid a\in V^t\}\cup\{{\{a\}\leftarrow{}}\mid a\in V^u\}
+    \]
+  \end{itemize}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{\texttt{\#script} declaration}
+  \begin{itemize}
+  \item A \alert{script declaration} is of form
+    \[
+    \texttt{\#script(python)} \ P \ \texttt{\#end}
+    \]
+    where $P$ is a Python program
+  \item<2> Analogously for Lua
+  \item<4-> \alert{\texttt{main}} routine exercises control\pause[5] \alert<5>{(from within \clingo, not from Python)}
+  \item<6-> \structure{Example\only<7>{s}}
+    \par\medskip\footnotesize
+    \begin{minipage}{0.4\linewidth}
+\begin{semiverbatim}
+#script(python)
+def main(prg):
+    prg.ground([("base",[])])
+    prg.solve()
+#end.
+\end{semiverbatim}
+    \end{minipage}
+    \qquad\pause[7]
+    \begin{minipage}{0.4\linewidth}
+\begin{semiverbatim}
+#script(python)
+def main(prg):
+    prg.ground([("acid",[42])])
+    prg.solve()
+#end.
+\end{semiverbatim}
+    \end{minipage}
+  \end{itemize}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{Example}
+\scriptsize\vspace{-10pt}%
+\begin{semiverbatim}
+   \alert<3>{#external p(1;2;3).}
+   \alert<3>{p(0) :- p(3).}
+   \alert<3>{p(0) :- not p(0).}
+
+   \alert<3>{#program succ(n).}
+   \alert<3>{#external p(n+3).}
+   \alert<3>{p(n) :- p(n+3).}
+   \alert<3>{p(n) :- not p(n+1), not p(n+2).}
+
+   \alert<2>{#script(python)}
+   from clingo import Fun
+   \alert<2>{def main(\alert<3>{prg})}:
+       prg.ground([("base", [])])
+       prg.assign_external(Fun("p", [3]), True)
+       prg.solve()
+       prg.assign_external(Fun("p", [3]), False)
+       prg.solve()
+       prg.ground([("succ", [1]),("succ", [2])])
+       prg.solve()
+       prg.ground([("succ", [3])])
+       prg.solve()
+   \alert<2>{#end}.
+\end{semiverbatim}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}{Extensible programs}
+  \begin{itemize}
+  \item Initial \clingo\ state\only<3->{, or more precisely, state of \alert{\clingo\ object `\texttt{prg}'}}
+    \[
+    \only<-3>{(\boldsymbol{\RRG}_0,\module{P}_0,V_0 )}\only<4->{\hspace{10pt}\mathit{create}(R)}
+    =
+    (
+    (\RRG(\mathtt{base}),\RRG(\mathtt{succ})),(\emptyset,\emptyset,\emptyset),(\emptyset,\emptyset)
+    )
+    \]
+  \item[] where \only<4->{$R$ is the list of rules and declarations in Line~1-8 and}
+    \begin{align*}
+      \RRG(\mathtt{base})
+      &=
+      \left\{
+        \begin{array}{ll}
+          \texttt{\#external}~p(1) & p(0)\leftarrow p(3)      \\
+          \texttt{\#external}~p(2) & p(0)\leftarrow \naf{p(0)}\\
+          \texttt{\#external}~p(3) &\\
+        \end{array}
+      \right\}
+      \\[10pt]
+      \RRG(\mathtt{succ})
+      &=
+      \left\{
+        \begin{array}{l}
+          \texttt{\#external}~p(n+3)\\
+          p(n)\leftarrow p(n+3)\\
+          p(n)\leftarrow \naf{p(n+1)},\naf{p(n+2)}
+        \end{array}
+      \right\}
+    \end{align*}
+  \item<2-> Initial atom base
+    \(
+    \inp{\module{P}_0}\cup\out{\module{P}_0}=\emptyset
+    \)
+    \only<-4>{\vspace{16pt}}
+  \item <only@5> \structure{Note} $\mathit{create}(R)$ is invoked implicitly to create \clingo\ object `\texttt{prg}'
+  \end{itemize}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{Example}
+\scriptsize\vspace{-10pt}%
+\begin{semiverbatim}
+   #external p(1;2;3).
+   p(0) :- p(3).
+   p(0) :- not p(0).
+
+   #program succ(n).
+   #external p(n+3).
+   p(n) :- p(n+3).
+   p(n) :- not p(n+1), not p(n+2).
+
+   #script(python)
+   from clingo import Fun
+   def main(prg):
+\only<2>{\alert{>>}}\only<1>{  }     \alert<2>{prg.ground([("base", [])])}
+       prg.assign_external(Fun("p", [3]), True)
+       prg.solve()
+       prg.assign_external(Fun("p", [3]), False)
+       prg.solve()
+       prg.ground([("succ", [1]),("succ", [2])])
+       prg.solve()
+       prg.ground([("succ", [3])])
+       prg.solve()
+   #end.
+\end{semiverbatim}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}{\texttt{prg.ground([("base", [])])}}
+  \begin{itemize}
+  \item \structure{Global} \clingo\ state $(\boldsymbol{\RRG}_0,\module{P}_0,V_0 )$, including atom base $\emptyset$
+  \item \structure{Input}  Extensible program $\RRG(\mathtt{base})$
+  \item<2-> \structure{Output} Module
+      \begin{align*}
+        \inst{\module{\RRG}_1}{\emptyset} & {} = (P_1,E_1,\{p(0)\})   \qquad\text{ where}\\
+        P_1 & {} = \{p(0)\leftarrow p(3);\ p(0)\leftarrow \naf{p(0)}\}             \\
+        E_1 & {} = \{p(1),p(2),p(3)\}
+      \end{align*}
+  \item<3-> \structure{Result} \clingo\ state
+    \[
+    \hspace{-10pt}
+    (\boldsymbol{\RRG}_1,\module{P}_1,V_1 )
+    =
+    (
+     \boldsymbol{\RRG}_0,\module{P}_0 \sqcup \inst{\module{\RRG}_1}{\emptyset},V_0
+    )
+    \]
+    where
+    \begin{align*}
+    \hspace{-10pt}
+      \module{P}_1
+      & {} =
+      \module{P}_0 \sqcup \inst{\module{\RRG}_1}{\emptyset}
+      \pause[4] =
+      (\emptyset,\emptyset,\emptyset) \sqcup (P_1,E_1,\{p(0)\})\\
+      &\pause[5] {} =
+      (
+      \{
+      p(0)\leftarrow p(3);\
+      p(0)\leftarrow \naf{p(0)}
+      \},
+      \{p(1),p(2),p(3)\},
+      \{p(0)\}
+      )
+    \end{align*}
+  \end{itemize}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{Example}
+\scriptsize\vspace{-10pt}%
+\begin{semiverbatim}
+   #external p(1;2;3).
+   p(0) :- p(3).
+   p(0) :- not p(0).
+
+   #program succ(n).
+   #external p(n+3).
+   p(n) :- p(n+3).
+   p(n) :- not p(n+1), not p(n+2).
+
+   #script(python)
+   from clingo import Fun
+   def main(prg):
+\only<1>{\alert{>>}}\only<2>{  }     \alert<1>{prg.ground([("base", [])])}
+\only<2>{\alert{>>}}\only<1>{  }     \alert<2>{prg.assign_external(Fun("p", [3]), True)}
+       prg.solve()
+       prg.assign_external(Fun("p", [3]), False)
+       prg.solve()
+       prg.ground([("succ", [1]),("succ", [2])])
+       prg.solve()
+       prg.ground([("succ", [3])])
+       prg.solve()
+   #end.
+\end{semiverbatim}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}{\texttt{prg.assign\_external(Fun("p",[3]),True)}}
+  \begin{itemize}
+  \item \structure{Global} \clingo\ state $(\boldsymbol{\RRG}_1,\module{P}_1,V_1 )$
+  \item \structure{Input} \ assignment \ $p(3)\mapsto t$
+    \medskip
+  \item<2-> \structure{Result} \clingo\ state
+    \[
+    (\boldsymbol{\RRG}_2,\module{P}_2,V_2 )
+    =
+    (\boldsymbol{\RRG}_0,\module{P}_1,(\{p(3)\},\emptyset))
+    \]
+  \end{itemize}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{Example}
+\scriptsize\vspace{-10pt}%
+\begin{semiverbatim}
+   #external p(1;2;3).
+   p(0) :- p(3).
+   p(0) :- not p(0).
+
+   #program succ(n).
+   #external p(n+3).
+   p(n) :- p(n+3).
+   p(n) :- not p(n+1), not p(n+2).
+
+   #script(python)
+   from clingo import Fun
+   def main(prg):
+       prg.ground([("base", [])])
+\only<1>{\alert{>>}}\only<2>{  }     \alert<1>{prg.assign_external(Fun("p", [3]), True)}
+\only<2>{\alert{>>}}\only<1>{  }     \alert<2>{prg.solve()}
+       prg.assign_external(Fun("p", [3]), False)
+       prg.solve()
+       prg.ground([("succ", [1]),("succ", [2])])
+       prg.solve()
+       prg.ground([("succ", [3])])
+       prg.solve()
+   #end.
+\end{semiverbatim}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}{\texttt{prg.solve()}}
+  \begin{itemize}
+  \item \structure{Global} \clingo\ state $(\boldsymbol{\RRG}_2,\module{P}_2,V_2 )$
+  \item \structure{Input} \ empty assignment
+    \medskip
+  \item<2-> \structure{Result} \clingo\ state
+    \[
+      (\boldsymbol{\RRG}_2,\module{P}_2,V_2 )\pause[3]
+    = (\boldsymbol{\RRG}_0,\module{P}_1,(\{p(3)\},\emptyset))
+    \]
+  \item<4->\structure{Print}  stable model $\{p(0),p(3)\}$ of~$\module{P}_2$ wrt $V_2$
+  \end{itemize}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{Example}
+\scriptsize\vspace{-10pt}%
+\begin{semiverbatim}
+   #external p(1;2;3).
+   p(0) :- p(3).
+   p(0) :- not p(0).
+
+   #program succ(n).
+   #external p(n+3).
+   p(n) :- p(n+3).
+   p(n) :- not p(n+1), not p(n+2).
+
+   #script(python)
+   from clingo import Fun
+   def main(prg):
+       prg.ground([("base", [])])
+       prg.assign_external(Fun("p", [3]), True)
+\only<1>{\alert{>>}}\only<2>{  }     \alert<1>{prg.solve()}
+\only<2>{\alert{>>}}\only<1>{  }     \alert<2>{prg.assign_external(Fun("p", [3]), False)}
+       prg.solve()
+       prg.ground([("succ", [1]),("succ", [2])])
+       prg.solve()
+       prg.ground([("succ", [3])])
+       prg.solve()
+   #end.
+\end{semiverbatim}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}{\texttt{prg.assign\_external(Fun("p",[3]),False)}}
+  \begin{itemize}
+  \item \structure{Global} \clingo\ state $(\boldsymbol{\RRG}_2,\module{P}_2,V_2 )$
+  \item \structure{Input} \ assignment \ $p(3)\mapsto f$
+    \medskip
+  \item<2-> \structure{Result} \clingo\ state
+    \[
+    (\boldsymbol{\RRG}_3,\module{P}_3,V_3 )
+    =
+    (\boldsymbol{\RRG}_0,\module{P}_1,(\emptyset,\emptyset))
+    \]
+  \end{itemize}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{Example}
+\scriptsize\vspace{-10pt}%
+\begin{semiverbatim}
+   #external p(1;2;3).
+   p(0) :- p(3).
+   p(0) :- not p(0).
+
+   #program succ(n).
+   #external p(n+3).
+   p(n) :- p(n+3).
+   p(n) :- not p(n+1), not p(n+2).
+
+   #script(python)
+   from clingo import Fun
+   def main(prg):
+       prg.ground([("base", [])])
+       prg.assign_external(Fun("p", [3]), True)
+       prg.solve()
+\only<1>{\alert{>>}}\only<2>{  }     \alert<1>{prg.assign_external(Fun("p", [3]), False)}
+\only<2>{\alert{>>}}\only<1>{  }     \alert<2>{prg.solve()}
+       prg.ground([("succ", [1]),("succ", [2])])
+       prg.solve()
+       prg.ground([("succ", [3])])
+       prg.solve()
+   #end.
+\end{semiverbatim}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}{\texttt{prg.solve()}}
+  \begin{itemize}
+  \item \structure{Global} \clingo\ state $(\boldsymbol{\RRG}_3,\module{P}_3,V_3 )$
+  \item \structure{Input} \ empty assignment
+    \medskip
+  \item<2-> \structure{Result} \clingo\ state
+    \[
+      (\boldsymbol{\RRG}_3,\module{P}_3,V_3 )
+    = (\boldsymbol{\RRG}_0,\module{P}_1,(\emptyset,\emptyset) )
+    \]
+  \item<3->\structure{Print} no stable model of~$\module{P}_3$ wrt $V_3$
+  \end{itemize}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{Example}
+\scriptsize\vspace{-10pt}%
+\begin{semiverbatim}
+   #external p(1;2;3).
+   p(0) :- p(3).
+   p(0) :- not p(0).
+
+   #program succ(n).
+   #external p(n+3).
+   p(n) :- p(n+3).
+   p(n) :- not p(n+1), not p(n+2).
+
+   #script(python)
+   from clingo import Fun
+   def main(prg):
+       prg.ground([("base", [])])
+       prg.assign_external(Fun("p", [3]), True)
+       prg.solve()
+       prg.assign_external(Fun("p", [3]), False)
+\only<1>{\alert{>>}}\only<2>{  }     \alert<1>{prg.solve()}
+\only<2>{\alert{>>}}\only<1>{  }     \alert<2>{prg.ground([("succ", [1]),("succ", [2])])}
+       prg.solve()
+       prg.ground([("succ", [3])])
+       prg.solve()
+   #end.
+\end{semiverbatim}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}{\texttt{prg.ground([("succ",[1]),("succ",[2])])}}
+  \begin{itemize}
+  \item \structure{Global} \clingo\ state $(\boldsymbol{\RRG}_3,\module{P}_3,V_3 )$, including atom base
+    \\\qquad\quad
+    \(
+    \inp{\module{P}_3}\cup\out{\module{P}_3}=\{p(0),p(1),p(2),p(3)\}
+    \)
+  \item \structure{Input} Extensible program
+    \(
+    \RRG(\mathtt{succ})[\mathtt{n}/\mathtt{1}]\cup\RRG(\mathtt{succ})[\mathtt{n}/\mathtt{2}]
+    \)
+  \item<2-> \structure{Output} Module
+    \begin{align*}
+      \inst{\module{\RRG}_4}{\inp{\module{P}_3}\cup\out{\module{P}_3}}
+      &=
+        \left(
+        P_4
+        ,
+        \left\{
+        \begin{array}{@{}l@{}}
+          p(0),p(4),
+          \\
+          p(3),p(5)
+        \end{array}
+      \right\}
+      ,
+      \left\{
+      \begin{array}{@{}l@{}}
+        p(1),\\p(2)
+      \end{array}
+      \right\}
+      \right)
+      \ \text{ where}\\
+      P_4 & {} =
+               \left\{
+               \begin{array}{@{}l@{}}
+                 p(1)\leftarrow p(4);\ p(1)\leftarrow \naf{p(2)},\naf{p(3)};
+                 \\
+                 p(2)\leftarrow p(5);\ p(2)\leftarrow \naf{p(3)},\naf{p(4)}
+               \end{array}
+      \right\}\\
+      E_4 & {} = \{p(4),p(5)\}
+    \end{align*}
+    % ???    \medskip
+  \item<2-> \structure{Result} \clingo\ state
+    \[
+    (\boldsymbol{\RRG}_4,\module{P}_4,V_4 )
+    =
+    (\boldsymbol{\RRG}_0,\module{P}_3\sqcup\inst{\module{\RRG}_4}{\inp{\module{P}_3}\cup\out{\module{P}_3}},V_3)
+    \]
+  \end{itemize}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}{\texttt{prg.ground([("succ",[1]),("succ",[2])])}}
+  \begin{itemize}
+  \item<2-> \structure{Result} \clingo\ state
+    \[
+    (\boldsymbol{\RRG}_4,\module{P}_4,V_4 )
+    =
+    (\boldsymbol{\RRG}_0,\module{P}_3\sqcup\inst{\module{\RRG}_4}{\inp{\module{P}_3}\cup\out{\module{P}_3}},V_3)
+    \]
+  \item<3->[] where\scriptsize
+    \begin{align*}
+      \hspace{-30pt}
+      \module{P}_4 % ----------------------------------------------------------------------------------------------
+      & =
+        \left(\!
+        \left\{
+        \begin{array}{@{\!}l@{\!}}
+          \alert<4>{p(0)\leftarrow p(3)};\quad   \alert<5>{p(1)\leftarrow p(4)};\ \alert<5>{p(1)\leftarrow \naf{p(2)},\naf{p(3)}};
+          \\
+          \alert<4>{p(0)\leftarrow \naf{p(0)}};\ \alert<5>{p(2)\leftarrow p(5)};\ \alert<5>{p(2)\leftarrow \naf{p(3)},\naf{p(4)}}
+        \end{array}
+      \right\}
+      \!,\!
+      \left\{
+      \begin{array}{@{\!}l@{\!}}
+        \phantom{p(3),}\, \alert<7>{p(4)},
+        \\
+        \alert<6,7>{p(3)},\alert<7>{p(5)}
+      \end{array}
+      \right\}
+      \!,\!
+      \left\{
+      \begin{array}{@{\!}l@{\!}}
+        \alert<8>{p(0)},\alert<9>{p(1)},
+        \\
+        \phantom{p(0),}\,\alert<9>{p(2)}
+      \end{array}
+      \right\}\!
+      \right)
+    \end{align*}
+  \item<3-> [] \scriptsize
+    \begin{align*}
+      \module{P}_3 % ----------------------------------------------------------------------------------------------
+      & {} =
+        \left(
+        \left\{
+        \begin{array}{@{}l@{}}
+          \alert<4>{p(0)\leftarrow p(3)};\\
+          \alert<4>{p(0)\leftarrow \naf{p(0)}}
+        \end{array}
+      \right\},
+      \{\textcolor<6>{red}{p(1)},\textcolor<6>{red}{p(2)},\alert<6>{p(3)}\},
+      \{\alert<8>{\textcolor<7>{red}{p(0)}}\}
+      \right)
+      \\[5pt]
+      \hspace{-30pt}
+      \inst{\module{\RRG}_4}{\inp{\module{P}_3}\cup\out{\module{P}_3}} % ----------------------------------------
+      &=
+        \left(
+        \left\{
+        \begin{array}{@{}l@{}}
+          \alert<5>{p(1)\leftarrow p(4)};\ \alert<5>{p(1)\leftarrow \naf{p(2)},\naf{p(3)}};
+          \\
+          \alert<5>{p(2)\leftarrow p(5)};\ \alert<5>{p(2)\leftarrow \naf{p(3)},\naf{p(4)}}
+        \end{array}
+      \right\}
+      ,
+      \left\{
+      \begin{array}{@{}l@{}}
+        \textcolor<7>{red}{p(0)},\alert<7>{p(4)},
+        \\
+        \alert<7>{p(3)},\alert<7>{p(5)}
+      \end{array}
+      \right\}
+      ,
+      \left\{
+      \begin{array}{@{}l@{}}
+        \alert<9>{\textcolor<6>{red}{p(1)}},\\\alert<9>{\textcolor<6>{red}{p(2)}}
+      \end{array}
+      \right\}
+      \right)
+    \end{align*}
+  \end{itemize}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{Example}
+\scriptsize\vspace{-10pt}%
+\begin{semiverbatim}
+   #external p(1;2;3).
+   p(0) :- p(3).
+   p(0) :- not p(0).
+
+   #program succ(n).
+   #external p(n+3).
+   p(n) :- p(n+3).
+   p(n) :- not p(n+1), not p(n+2).
+
+   #script(python)
+   from clingo import Fun
+   def main(prg):
+       prg.ground([("base", [])])
+       prg.assign_external(Fun("p", [3]), True)
+       prg.solve()
+       prg.assign_external(Fun("p", [3]), False)
+       prg.solve()
+\only<1>{\alert{>>}}\only<2>{  }     \alert<1>{prg.ground([("succ", [1]),("succ", [2])])}
+\only<2>{\alert{>>}}\only<1>{  }     \alert<2>{prg.solve()}
+       prg.ground([("succ", [3])])
+       prg.solve()
+   #end.
+\end{semiverbatim}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}{\texttt{prg.solve()}}
+  \begin{itemize}
+  \item \structure{Global} \clingo\ state $(\boldsymbol{\RRG}_4,\module{P}_4,V_4 )$
+  \item \structure{Input} \ empty assignment
+    \medskip
+  \item<2-> \structure{Result} \clingo\ state
+    \[
+      (\boldsymbol{\RRG}_4,\module{P}_4,V_4 )
+    = (\boldsymbol{\RRG}_0,\module{P}_4,V_3 )
+    \]
+  \item<3->\structure{Print} no stable model of~$\module{P}_4$ wrt $V_4$
+  \end{itemize}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{Example}
+\scriptsize\vspace{-10pt}%
+\begin{semiverbatim}
+   #external p(1;2;3).
+   p(0) :- p(3).
+   p(0) :- not p(0).
+
+   #program succ(n).
+   #external p(n+3).
+   p(n) :- p(n+3).
+   p(n) :- not p(n+1), not p(n+2).
+
+   #script(python)
+   from clingo import Fun
+   def main(prg):
+       prg.ground([("base", [])])
+       prg.assign_external(Fun("p", [3]), True)
+       prg.solve()
+       prg.assign_external(Fun("p", [3]), False)
+       prg.solve()
+       prg.ground([("succ", [1]),("succ", [2])])
+\only<1>{\alert{>>}}\only<2>{  }     \alert<1>{prg.solve()}
+\only<2>{\alert{>>}}\only<1>{  }     \alert<2>{prg.ground([("succ", [3])])}
+       prg.solve()
+   #end.
+\end{semiverbatim}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}{\texttt{prg.ground([("succ", [3])])}}
+  \begin{itemize}
+  \item \structure{Global} \clingo\ state $(\boldsymbol{\RRG}_4,\module{P}_4,V_4 )$, including atom base
+    \\\qquad\quad
+    \(
+    {\inp{\module{P}_4}\cup\out{\module{P}_4}}=\{p(0),p(1),p(2),p(3),p(4),p(5)\}
+    \)
+  \item \structure{Input} \ Extensible program
+    \(
+    \RRG(\mathtt{succ})[\mathtt{n}/\mathtt{3}]
+    \)
+  \item<2-> \structure{Output} Module
+    \begin{align*}
+      \inst{\module{\RRG}_5}{\inp{\module{P}_4}\cup\out{\module{P}_4}}
+      &{}=
+        \left(
+        P_5%\{p(3)\leftarrow p(6);\ p(3)\leftarrow \naf{p(4)},\naf{p(5)}\}
+        ,
+        \left\{
+        \begin{array}{@{}l@{}}
+          p(0),p(1),p(2),
+          \\
+          p(4),p(5),p(6)
+        \end{array}
+      \right\}
+      ,
+      \left\{
+      p(3)
+      \right\}
+      \right)
+      \\ \text{where }
+      P_5 & {} = \{p(3)\leftarrow p(6);\ p(3)\leftarrow \naf{p(4)},\naf{p(5)}\}\\
+      E_5 & {} = \{p(6)\}
+    \end{align*}
+  \item<3-> \structure{Result} \clingo\ state
+    \[
+    (\boldsymbol{\RRG}_5,\module{P}_5,V_5 )
+    =
+    (\boldsymbol{\RRG}_0,\module{P}_4\sqcup\inst{\module{\RRG}_5}{\inp{\module{P}_4}\cup\out{\module{P}_4}},V_3)
+    \]
+  \end{itemize}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}{\texttt{prg.ground([("succ", [3])])}}
+  \begin{itemize}
+  \item \structure{Result} \clingo\ state
+    \[
+    (\boldsymbol{\RRG}_5,\module{P}_5,V_5 )
+    =
+    (\boldsymbol{\RRG}_0,\module{P}_4\sqcup\inst{\module{\RRG}_5}{\inp{\module{P}_4}\cup\out{\module{P}_4}},V_3)
+    \]
+    where
+    \begin{align*}
+      \boldsymbol{\RRG}_5 & {} = (\RRG(\mathtt{base}),\RRG(\mathtt{succ}))
+      \\[10pt]
+      \prog{\module{P}_5}
+      & {} =
+      \left\{
+        \begin{array}{@{}l@{}}
+          p(0)\leftarrow p(3);\quad   p(1)\leftarrow p(4);\ p(1)\leftarrow \naf{p(2)},\naf{p(3)};
+          \\
+          p(0)\leftarrow \naf{p(0)};\ p(2)\leftarrow p(5);\ p(2)\leftarrow \naf{p(3)},\naf{p(4)};
+          \\
+          \phantom{p(0)\leftarrow \naf{p(0)};\ }\,p(3)\leftarrow p(6);\ p(3)\leftarrow \naf{p(4)},\naf{p(5)}
+        \end{array}
+      \right\}
+      \\
+      \inp{\module{P}_5}
+      & {} =
+      \left\{
+        p(4),
+        p(5),
+        p(6)
+      \right\}
+      \\
+      \out{\module{P}_5}
+      & {} =
+      \left\{
+        p(0),p(1),p(2), p(3)
+      \right\}
+      \\[10pt]
+      V_5 & {} = (\emptyset,\emptyset)
+    \end{align*}
+  \end{itemize}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{Example}
+\scriptsize\vspace{-10pt}%
+\begin{semiverbatim}
+   #external p(1;2;3).
+   p(0) :- p(3).
+   p(0) :- not p(0).
+
+   #program succ(n).
+   #external p(n+3).
+   p(n) :- p(n+3).
+   p(n) :- not p(n+1), not p(n+2).
+
+   #script(python)
+   from clingo import Fun
+   def main(prg):
+       prg.ground([("base", [])])
+       prg.assign_external(Fun("p", [3]), True)
+       prg.solve()
+       prg.assign_external(Fun("p", [3]), False)
+       prg.solve()
+       prg.ground([("succ", [1]),("succ", [2])])
+       prg.solve()
+\only<1>{\alert{>>}}\only<2>{  }     \alert<1>{prg.ground([("succ", [3])])}
+\only<2>{\alert{>>}}\only<1>{  }     \alert<2>{prg.solve()}
+   #end.
+\end{semiverbatim}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}{\texttt{prg.solve()}}
+  \begin{itemize}
+  \item \structure{Global} \clingo\ state $(\boldsymbol{\RRG}_5,\module{P}_5,V_5 )$
+  \item \structure{Input} \ empty assignment
+    \medskip
+  \item<2-> \structure{Result} \clingo\ state
+    \[
+      (\boldsymbol{\RRG}_5,\module{P}_5,V_5 )
+    = (\boldsymbol{\RRG}_0,\module{P}_5,V_3 )
+    \]
+  \item<3->\structure{Print}  stable model $\{p(0),p(3)\}$ of~$\module{P}_5$ wrt $V_5$
+  \end{itemize}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{\texttt{simple.lp}}
+\scriptsize\vspace{-10pt}%
+\begin{semiverbatim}
+   #external p(1;2;3).
+   p(0) :- p(3).
+   p(0) :- not p(0).
+
+   #program succ(n).
+   #external p(n+3).
+   p(n) :- p(n+3).
+   p(n) :- not p(n+1), not p(n+2).
+
+   #script(python)
+   from clingo import Fun
+   def main(prg):
+       prg.ground([("base", [])])
+       prg.assign_external(Fun("p", [3]), True)
+       prg.solve()
+       prg.assign_external(Fun("p", [3]), False)
+       prg.solve()
+       prg.ground([("succ", [1]),("succ", [2])])
+       prg.solve()
+       prg.ground([("succ", [3])])
+       prg.solve()
+   #end.
+\end{semiverbatim}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{Clingo on the run}
+\footnotesize
+\begin{semiverbatim}
+$ clingo simple.lp\pause[2]
+clingo version 4.5.0
+Reading from simple.lp
+Solving...
+Answer: 1
+p(3) p(0)
+Solving...
+Solving...
+Solving...
+Answer: 1
+p(3) p(0)
+SATISFIABLE
+
+Models       : 2+
+Calls        : 4
+Time         : 0.019s (Solving: 0.00s 1st Model: 0.00s Unsat: 0.00s)
+CPU Time     : 0.010s
+\end{semiverbatim}
+\end{frame}

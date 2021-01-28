@@ -1,0 +1,211 @@
+% ------------------------------------------------------------
+\section{Module composition}
+% ------------------------------------------------------------
+\begin{frame}[c]{Module}
+  \begin{itemize}
+  \item<1-> The assembly of subprograms can be characterized\\ by means of modules:
+    \bigskip
+  \item<2-> A \alert{module} \module{P} is a triple
+    \(
+    (P,I,O)
+    \)
+    consisting of
+    \begin{itemize}\normalsize
+    \item a (ground) program $P$ over $\ground{\mathcal{A}}$
+      and
+    \item sets $I,O\subseteq\ground{\mathcal{A}}$ such that
+      \begin{itemize}\normalsize
+      \item $I\cap O=\emptyset$,
+      \item $\atom{P}\subseteq I\cup O$, and
+      \item $\head{P}\subseteq O$
+      \end{itemize}
+    \end{itemize}
+    \medskip
+  \item<3-> The elements of~$I$ and~$O$ are called \alert{input} and \alert{output atoms}
+    \begin{itemize}
+    \item<4-> denoted by $I(\module{P})$ and $O(\module{P})$
+    \end{itemize}
+  \item<5-> Similarly, we refer to (ground) \alert{program}~$P$ by $P(\module{P})$
+  \end{itemize}
+  % We say that $\module{P}$ is \alert{input-free}, if $I(\module{P})=\emptyset$
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}{Composing modules}
+  \begin{itemize}
+  \item<2-> Two modules~\module{P} and~\module{\QRG} are
+    \alert{compositional}\pause[3], if
+    \begin{itemize}
+    \item <3->
+      $\out{\module{P}}\cap\out{\module{\QRG}}=\emptyset$
+      \pause[4]and
+      \smallskip
+    \item <4->
+      $\out{\module{P}}\cap S=\emptyset$ or
+      $\out{\module{\QRG}}\cap S=\emptyset$
+      \\
+      for every strongly connected component~$S$ of
+      $\prog{\module{P}}\cup\prog{\module{\QRG}}$
+    \end{itemize}
+  \item<5-> \structure{Note}
+    \begin{itemize}
+    \item Recursion between two modules to be joined is disallowed
+      \smallskip
+    \item Recursion within each module is allowed
+    \end{itemize}
+    \medskip
+  \item<6-> The \alert{join}, $\module{P} \sqcup \module{\QRG}$, of two modules
+    $\module{P}$ and $\module{\QRG}$ is defined as the module
+    \[
+    (\; \alert<2>{P(\module{P}) \cup P(\module{\QRG})}\,,
+     \; \alert<3>{(I(\module{P})\setminus O(\module{\QRG}))
+                  \cup
+                  (I(\module{\QRG})\setminus O(\module{P}))}\,,
+     \; \alert<4>{O(\module{P}) \cup O(\module{\QRG})}
+     \;)
+    \]
+    \alert<7>{provided that~\module{P} and~\module{\QRG} are compositional}
+  \end{itemize}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}{Composing logic programs with externals}
+  \begin{itemize}
+  \item<1-> \structure{Idea} Each \lstinline{ground} instruction induces a module to be joined\\ with the module representing the current program state
+    \medskip
+  \item<2->
+    Given an atom base $C$,
+    a (non-ground) extensible program \RRG\\ induces the module
+    \[ % begin{equation}\label{eq:ground:module}
+      \inst{\module{\RRG}}{C}
+      =
+      (P,(C\cup E)\setminus\head{P},\head{P})
+    \] % end{equation}
+    via the ground program $P$ with externals $E$ obtained from \RRG\ and $C$
+    \medskip
+  \item<3-> \structure{Note}
+    $E\setminus\head{P}$ consists of atoms stemming from non-overwritten\\ external declarations
+\end{itemize}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}[fragile]{Example}
+  \begin{itemize}
+  \item<1-> Atom base $C=\{\text{\lstinline{g(1)}}\}$
+  \item<only@1,4> Extensible program $\RRG$
+    \begin{semiverbatim}
+  #external e(X) : f(X), g(X)
+  f(1). f(2).
+  a(X) :- f(X), e(X).
+  b(X) :- f(X), not e(X).
+    \end{semiverbatim}
+    \vspace{-10pt}
+  \item<only@2-3> Ground program $P$
+    \begin{semiverbatim}
+  f(1). f(2).
+  a(1) :- f(1), e(1).
+  b(1) :- f(1), not e(1).   b(2) :- f(2).
+    \end{semiverbatim}
+    \vspace{-13pt}
+  \item<only@2-3>[] with externals $E=\{\text{\lstinline{e(1)}}\}$
+  \item<3-> Module
+    \(
+    \inst{\module{\RRG}}{C}=(P,(C\cup E)\setminus\head{P},\head{P})
+    \)
+    \[
+    \hspace{-15pt}
+    {} =
+    \left(
+      \left\{
+        \begin{array}{l}
+          f(1), \  f(2), \\
+          a(1) \leftarrow f(1), e(1),\\
+          b(1) \leftarrow f(1), \naf{e(1)},\\
+          b(2) \leftarrow f(2)
+        \end{array}
+      \right\}
+      ,
+      \left\{
+        \begin{array}[l]{l}
+          g(1),\\e(1)
+        \end{array}
+      \right\}
+      ,
+      \left\{
+        \begin{array}[l]{l}
+          f(1), \  f(2), \\
+          a(1),\\
+          b(1), b(2)
+        \end{array}
+      \right\}
+    \right)
+    \]
+  \end{itemize}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}{Capturing program states by modules}
+  \begin{itemize}
+  \item<1-> Each program state is captured by a module
+    \begin{itemize}
+    \item<2-> The input and output atoms of each module provide the atom base
+    \end{itemize}
+    \medskip
+  \item<3-> The initial program state is given by the empty module
+    \[
+    \module{P}_0 = (\emptyset,\emptyset,\emptyset)
+    \]
+  \item<4->
+    The program state succeeding~$\module{P}_i$ is captured by the module
+    \[ % begin{equation}\label{eq:module:composition}
+      \module{P}_{i+1}
+      =
+      \module{P}_i
+      \sqcup
+      \inst{\module{\RRG}_{i+1}}{\inp{\module{P}_i}\cup\out{\module{P}_i}}
+    \] % end{equation}
+    where
+    \(
+    \inst{\module{\RRG}_{i+1}}{\inp{\module{P}_i}\cup\out{\module{P}_i}}
+    \)
+    captures the result of grounding an extensible program \RRG\ relative to atom base $\inp{\module{P}_i}\cup\out{\module{P}_i}$
+    \smallskip
+  \item<5-> \structure{Note} The join leading to $\module{P}_{i+1}$ can be undefined in case the constituent modules are non-compositional
+  \end{itemize}
+\end{frame}
+% ------------------------------------------------------------
+\begin{frame}{Capturing program states by modules}
+  \begin{itemize}
+  \item<1->
+Let $(\RRG_i)_{i>0}$ be a sequence of (non-ground) extensible programs,
+and let
+$P_{i+1}$ be the ground program with externals $E_{i+1}$ obtained from $\RRG_{i+1}$ and $\inp{\module{P}_i}\cup\out{\module{P}_i}$
+\bigskip
+\item<2->[]
+If
+\(
+\bigsqcup_{i\geq 0}\module{P}_i
+\)
+is compositional,
+then
+\medskip
+\begin{enumerate}\normalsize
+\item
+\(
+\prog{\bigsqcup_{i\geq 0}\module{P}_i}
+=
+\bigcup_{i>0} P_i
+\)
+\smallskip
+\item
+\(
+\;\inp{\bigsqcup_{i\geq 0}\module{P}_i}
+=
+\bigcup_{i>0} E_i\setminus\bigcup_{i>0} \head{P_i}
+\)
+\smallskip
+\item
+\(
+\out{\bigsqcup_{i\geq 0}\module{P}_i}
+=
+\bigcup_{i>0} \head{P_i}
+\)
+\end{enumerate}
+\end{itemize}
+\end{frame}
