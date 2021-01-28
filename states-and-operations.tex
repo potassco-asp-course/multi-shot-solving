@@ -255,7 +255,7 @@ def main(prg):
       \left\{
         \begin{array}{ll}
           \texttt{\#external}~p(1) & p(0)\leftarrow p(3)      \\
-          \texttt{\#external}~p(2) & p(0)\leftarrow \naf{p(0)}\\
+          \texttt{\#external}~p(2) & p(0)\leftarrow \neg p(0)\\
           \texttt{\#external}~p(3) &\\
         \end{array}
       \right\}
@@ -266,7 +266,7 @@ def main(prg):
         \begin{array}{l}
           \texttt{\#external}~p(n+3)\\
           p(n)\leftarrow p(n+3)\\
-          p(n)\leftarrow \naf{p(n+1)},\naf{p(n+2)}
+          p(n)\leftarrow \neg p(n+1),\neg p(n+2)
         \end{array}
       \right\}
     \end{align*}
@@ -314,7 +314,7 @@ def main(prg):
   \item<2-> \structure{Output} Module
       \begin{align*}
         \inst{\module{\RRG}_1}{\emptyset} & {} = (P_1,E_1,\{p(0)\})   \qquad\text{ where}\\
-        P_1 & {} = \{p(0)\leftarrow p(3);\ p(0)\leftarrow \naf{p(0)}\}             \\
+        P_1 & {} = \{p(0)\leftarrow p(3);\ p(0)\leftarrow \neg p(0)\}             \\
         E_1 & {} = \{p(1),p(2),p(3)\}
       \end{align*}
   \item<3-> \structure{Result} \clingo\ state
@@ -338,7 +338,7 @@ def main(prg):
       (
       \{
       p(0)\leftarrow p(3);\
-      p(0)\leftarrow \naf{p(0)}
+      p(0)\leftarrow \neg p(0)
       \},
       \{p(1),p(2),p(3)\},
       \{p(0)\}
@@ -579,9 +579,9 @@ def main(prg):
       P_4 & {} =
                \left\{
                \begin{array}{@{}l@{}}
-                 p(1)\leftarrow p(4);\ p(1)\leftarrow \naf{p(2)},\naf{p(3)};
+                 p(1)\leftarrow p(4);\ p(1)\leftarrow \neg p(2),\neg p(3);
                  \\
-                 p(2)\leftarrow p(5);\ p(2)\leftarrow \naf{p(3)},\naf{p(4)}
+                 p(2)\leftarrow p(5);\ p(2)\leftarrow \neg p(3),\neg p(4)
                \end{array}
       \right\}\\
       E_4 & {} = \{p(4),p(5)\}
@@ -612,9 +612,9 @@ def main(prg):
         \left(\!
         \left\{
         \begin{array}{@{\!}l@{\!}}
-          \alert<4>{p(0)\leftarrow p(3)};\quad   \alert<5>{p(1)\leftarrow p(4)};\ \alert<5>{p(1)\leftarrow \naf{p(2)},\naf{p(3)}};
+          \alert<4>{p(0)\leftarrow p(3)};\quad   \alert<5>{p(1)\leftarrow p(4)};\ \alert<5>{p(1)\leftarrow \neg p(2),\neg p(3)};
           \\
-          \alert<4>{p(0)\leftarrow \naf{p(0)}};\ \alert<5>{p(2)\leftarrow p(5)};\ \alert<5>{p(2)\leftarrow \naf{p(3)},\naf{p(4)}}
+          \alert<4>{p(0)\leftarrow \neg p(0)};\ \alert<5>{p(2)\leftarrow p(5)};\ \alert<5>{p(2)\leftarrow \neg p(3),\neg p(4)}
         \end{array}
       \right\}
       \!,\!
@@ -643,7 +643,7 @@ def main(prg):
         \left\{
         \begin{array}{@{}l@{}}
           \alert<4>{p(0)\leftarrow p(3)};\\
-          \alert<4>{p(0)\leftarrow \naf{p(0)}}
+          \alert<4>{p(0)\leftarrow \neg p(0)}
         \end{array}
       \right\},
       \{\textcolor<6>{red}{p(1)},\textcolor<6>{red}{p(2)},\alert<6>{p(3)}\},
@@ -656,9 +656,9 @@ def main(prg):
         \left(
         \left\{
         \begin{array}{@{}l@{}}
-          \alert<5>{p(1)\leftarrow p(4)};\ \alert<5>{p(1)\leftarrow \naf{p(2)},\naf{p(3)}};
+          \alert<5>{p(1)\leftarrow p(4)};\ \alert<5>{p(1)\leftarrow \neg p(2),\neg p(3)};
           \\
-          \alert<5>{p(2)\leftarrow p(5)};\ \alert<5>{p(2)\leftarrow \naf{p(3)},\naf{p(4)}}
+          \alert<5>{p(2)\leftarrow p(5)};\ \alert<5>{p(2)\leftarrow \neg p(3),\neg p(4)}
         \end{array}
       \right\}
       ,
@@ -766,7 +766,7 @@ def main(prg):
       \inst{\module{\RRG}_5}{\inp{\module{P}_4}\cup\out{\module{P}_4}}
       &{}=
         \left(
-        P_5%\{p(3)\leftarrow p(6);\ p(3)\leftarrow \naf{p(4)},\naf{p(5)}\}
+        P_5%\{p(3)\leftarrow p(6);\ p(3)\leftarrow \neg p(4),\neg p(5)\}
         ,
         \left\{
         \begin{array}{@{}l@{}}
@@ -781,7 +781,7 @@ def main(prg):
       \right\}
       \right)
       \\ \text{where }
-      P_5 & {} = \{p(3)\leftarrow p(6);\ p(3)\leftarrow \naf{p(4)},\naf{p(5)}\}\\
+      P_5 & {} = \{p(3)\leftarrow p(6);\ p(3)\leftarrow \neg p(4),\neg p(5)\}\\
       E_5 & {} = \{p(6)\}
     \end{align*}
   \item<3-> \structure{Result} \clingo\ state
@@ -809,11 +809,11 @@ def main(prg):
       & {} =
       \left\{
         \begin{array}{@{}l@{}}
-          p(0)\leftarrow p(3);\quad   p(1)\leftarrow p(4);\ p(1)\leftarrow \naf{p(2)},\naf{p(3)};
+          p(0)\leftarrow p(3);\quad   p(1)\leftarrow p(4);\ p(1)\leftarrow \neg p(2),\neg p(3);
           \\
-          p(0)\leftarrow \naf{p(0)};\ p(2)\leftarrow p(5);\ p(2)\leftarrow \naf{p(3)},\naf{p(4)};
+          p(0)\leftarrow \neg p(0);\ p(2)\leftarrow p(5);\ p(2)\leftarrow \neg p(3),\neg p(4);
           \\
-          \phantom{p(0)\leftarrow \naf{p(0)};\ }\,p(3)\leftarrow p(6);\ p(3)\leftarrow \naf{p(4)},\naf{p(5)}
+          \phantom{p(0)\leftarrow \neg p(0);\ }\,p(3)\leftarrow p(6);\ p(3)\leftarrow \neg p(4),\neg p(5)
         \end{array}
       \right\}
       \\
