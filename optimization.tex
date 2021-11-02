@@ -6,7 +6,7 @@
     \smallskip
   \item \structure{Code snippet}
 \begin{lstlisting}
- ngoal(T) :- on(B,L,T), not goal_on(B,L).
+ ngoal(T) :- not on(B,L,T), goal_on(B,L), time(T).
  :- ngoal(n).
 \end{lstlisting}
     where \texttt{n} is a fixed horizon
