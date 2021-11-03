@@ -31,6 +31,40 @@
   \bigskip
   \lstinputlisting[language=python,linerange=22-27]{opt.py}
 \end{frame}
+% ----------------------------------------------------------------------
+\begin{frame}[fragile,shrink]{Let's run it!}
+\scriptsize\medskip
+\begin{lstlisting}
+UNIX> python opt.py tohB.lp tohI.lp -c n=17
+
+opt-example version 1.0
+Reading from tohB.lp ...
+Solving...
+Answer: 1
+move(4,b,1)  move(3,c,2)  move(4,a,3)  move(4,c,4)  move(2,b,5)  \
+move(4,a,6)  move(3,b,7)  move(4,c,8)  move(4,b,9)  move(1,c,10) \
+move(4,c,11) move(3,a,12) move(4,a,13) move(2,c,14) move(4,b,15)
+move(3,c,16) move(4,c,17)
+Found new bound: 17
+Solving...
+Answer: 1
+move(4,b,1)  move(3,c,2)  move(4,c,3)  move(2,b,4)  move(4,a,5)  \
+move(3,b,6)  move(4,c,7)  move(4,b,8)  move(1,c,9)  move(4,c,10) \
+move(3,a,11) move(4,a,12) move(2,c,13) move(4,b,14) move(3,c,15)
+move(4,c,16)
+Found new bound: 16
+Solving...
+Answer: 1
+move(4,b,1)  move(3,c,2)  move(4,c,3)  move(2,b,4)  move(4,a,5)  \
+move(3,b,6)  move(4,b,7)  move(1,c,8)  move(4,c,9)  move(3,a,10) \
+move(4,a,11) move(2,c,12) move(4,b,13) move(3,c,14) move(4,c,15)
+Found new bound: 15
+Solving...
+Optimum found
+UNSATISFIABLE
+\end{lstlisting}
+\end{frame}
+% ----------------------------------------------------------------------
 %
 %%% Local Variables:
 %%% mode: latex

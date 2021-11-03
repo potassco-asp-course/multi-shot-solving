@@ -25,9 +25,47 @@ p(t) :- p(t-1).#(\pause#)
   \lstinputlisting[language=python,linerange=72-93]{inc.py}
 \end{frame}
 % ----------------------------------------------------------------------
+\begin{frame}[fragile]{Check it out!}
+\scriptsize\medskip
+\begin{lstlisting}
+UNIX> python inc.py --help
+
+[...]
+Inc-Example Options:
+
+  --imin=<n>              : Minimum number of steps [1]
+  --imax=<n>              : Maximum number of steps [None]
+  --istop=<arg>           : Stop criterion [SAT]
+
+[...]
+\end{lstlisting}
+\end{frame}
+% ----------------------------------------------------------------------
 \begin{frame}[fragile,shrink]{Incremental solving, zoom on \texttt{main}}
   \bigskip
   \lstinputlisting[language=python,linerange=95-124]{inc.py}
+\end{frame}
+% ----------------------------------------------------------------------
+\begin{frame}[fragile]{Let's run it!}
+\scriptsize\medskip
+\begin{lstlisting}
+UNIX> python inc.py tohE.lp tohI.lp
+
+inc-example version 1.0
+Reading from tohE.lp ...
+Solving...
+[...]
+Solving...
+Answer: 1
+move(4,b,1)  move(3,c,2)  move(4,c,3)  move(2,b,4)  \
+move(4,a,5)  move(3,b,6)  move(4,b,7)  move(1,c,8)  \
+move(4,c,9)  move(3,a,10) move(4,a,11) move(2,c,12) \
+move(4,b,13) move(3,c,14) move(4,c,15)
+SATISFIABLE
+
+Models       : 1+
+Calls        : 16
+\end{lstlisting}
 \end{frame}
 % ----------------------------------------------------------------------
 %
