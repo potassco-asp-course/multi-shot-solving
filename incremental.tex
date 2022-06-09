@@ -1,20 +1,20 @@
 % ----------------------------------------------------------------------
-\begin{frame}[fragile,c]{An example of incremental solving}
-\begin{lstlisting}
-#(\pause#)#program base.
-
-p(0).#(\pause#)
-
-#program step (t).
-
-p(t) :- p(t-1).#(\pause#)
-
-#program check (t).
-#external query(t).       % added in python below
-
-:- not p(42), query(t).
-\end{lstlisting}
-\end{frame}
+% \begin{frame}[fragile,c]{An example of incremental solving}
+% \begin{lstlisting}
+% #(\pause#)#program base.
+%
+% p(0).#(\pause#)
+%
+% #program step (t).
+%
+% p(t) :- p(t-1).#(\pause#)
+%
+% #program check (t).
+% #external query(t).       % added in python below
+%
+% :- not p(42), query(t).
+% \end{lstlisting}
+% \end{frame}
 % ----------------------------------------------------------------------
 \begin{frame}[fragile,shrink]{Incremental solving}
   \lstinputlisting[language=python]{inc.py}
