@@ -1,0 +1,39 @@
+% ----------------------------------------------------------------------
+\begin{frame}{Informal foundations}
+  \medskip
+  \begin{itemize}
+  \item<only@1-2> The assembly of subprograms is characterized in terms of modules
+    \[
+      \module{P}=(P,I,O)
+    \]
+    where $P$ is a (ground) logic program, and $I$ and $O$ are sets of atoms
+    \smallskip
+  \item<only@1-2> \structure{Restrictions} on module composition
+    \begin{itemize}\normalsize
+    \item Head atoms of modules must be disjoint
+    \item Recursion between modules is disallowed
+    \end{itemize}
+    \medskip
+  \item <2-> A \alert{\clingo\ state} is a triple
+    \(
+      \ ( \left(Q_i\right)_{i\in I},\module{P},A ) \
+    \)
+    where
+    \begin{itemize}\normalsize
+    \item $\left(Q_i\right)_{i\in I}$ is a collection of (non-ground) logic programs
+    \item $\module{P}$ is a module
+    \item $A$ is a three-valued assignment
+    \end{itemize}
+    \smallskip
+  \item <only@3-> \structure{Operations}
+    \begin{itemize}
+  \item $\mathit{create}(R): {} \mapsto ( \left(Q_i\right)_{i\in I},\module{P},A )$
+  \item $\mathit{add}(R): ( \left(Q_i\right)_{i\in I},\module{P},A )\mapsto( \left(Q'_i\right)_{i\in I},\module{P},A )$
+  \item $\mathit{ground}((n,\boldsymbol{p}_n)_{n\in N}): ( \left(Q_i\right)_{i\in I},\module{P}_1,A_1 )\mapsto(\left(Q_i\right)_{i\in I},\module{P}_2,A_2 )$
+  \item $\mathit{assignExternal}(a,v): ( \left(Q_i\right)_{i\in I},\module{P},A_1 )\mapsto(\left(Q_i\right)_{i\in I},\module{P},A_2 )$
+  \item $\mathit{releaseExternal}(a): ( \left(Q_i\right)_{i\in I},\module{P}_1,A_1 )\mapsto(\left(Q_i\right)_{i\in I},\module{P}_2 ,A_2 )$
+  \item $\mathit{solve}(( A^t,A^f )): ( \left(Q_i\right)_{i\in I},\module{P},A )\mapsto( \left(Q_i\right)_{i\in I},\module{P},A )$
+  \end{itemize}
+\end{itemize}
+\end{frame}
+% ----------------------------------------------------------------------
